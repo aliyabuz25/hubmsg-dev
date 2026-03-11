@@ -74,12 +74,10 @@ Hazir stack dosyasi:
 
 Portainer web editor ile deploy akisi:
 
-```sh
 1. `portainer-stack.yml` icerigini Stack editor'e yapistir
 2. Stack environment variables bolumunu ac
 3. `MYSQL_PASSWORD`, `MYSQL_ROOT_PASSWORD`, `PMA_PASSWORD`, `SESSION_SECRET` degerlerini ekle
 4. `PMA_PASSWORD` degerini `MYSQL_PASSWORD` ile ayni yap
-```
 
 `portainer-stack.yml` placeholder degerlerle parse olur; production deploy oncesi bu degerleri gercek secret'larla override et.
 
