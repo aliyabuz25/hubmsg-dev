@@ -72,11 +72,16 @@ docker build -t hubmsg-v2-prod:latest -f /datastore/hubmsg-v2-prod/app/Dockerfil
 Hazir stack dosyasi:
 - `portainer-stack.yml`
 
-Deploy oncesi repo kokunde `.env.example` dosyasini `.env` olarak kopyala ve gercek secret degerlerini gir:
+Portainer web editor ile deploy akisi:
 
 ```sh
-cp .env.example .env
+1. `portainer-stack.yml` icerigini Stack editor'e yapistir
+2. Stack environment variables bolumunu ac
+3. `MYSQL_PASSWORD`, `MYSQL_ROOT_PASSWORD`, `PMA_PASSWORD`, `SESSION_SECRET` degerlerini ekle
+4. `PMA_PASSWORD` degerini `MYSQL_PASSWORD` ile ayni yap
 ```
+
+`portainer-stack.yml` placeholder degerlerle parse olur; production deploy oncesi bu degerleri gercek secret'larla override et.
 
 Ozellikler:
 - host port yok
@@ -85,7 +90,8 @@ Ozellikler:
 - Ayni host altinda `/pma` ile phpMyAdmin
 - service ici port `2004`
 - MySQL user: `hub@dev`
-- MySQL parolalari environment variable ile verilir, repoya commit edilmez
+- Portainer env anahtarlari: `MYSQL_PASSWORD`, `MYSQL_ROOT_PASSWORD`, `PMA_PASSWORD`, `SESSION_SECRET`
+- `PMA_PASSWORD`, `MYSQL_PASSWORD` ile ayni olmali
 - Uygulama servisi `Dockerfile` uzerinden otomatik build edilir
 
 Deploy:

@@ -19,7 +19,9 @@ services:
       MYSQL_PORT: "3306"
       MYSQL_DATABASE: hubmsg
       MYSQL_USER: 'hub@dev'
-      MYSQL_PASSWORD: ${MYSQL_APP_PASSWORD:?set MYSQL_APP_PASSWORD}
+      # Override all placeholder secrets in Portainer before production deploy.
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-PORTAINER_SET_MYSQL_PASSWORD}
+      SESSION_SECRET: ${SESSION_SECRET:-PORTAINER_SET_SESSION_SECRET}
     volumes:
       - /datastore/hubmsg-v2-prod/datalar:/app/datalar
       - /datastore/hubmsg-v2-prod/tenant_data:/app/tenant_data
@@ -53,8 +55,8 @@ services:
     environment:
       MYSQL_DATABASE: hubmsg
       MYSQL_USER: 'hub@dev'
-      MYSQL_PASSWORD: ${MYSQL_APP_PASSWORD:?set MYSQL_APP_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?set MYSQL_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-PORTAINER_SET_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-PORTAINER_SET_MYSQL_ROOT_PASSWORD}
     volumes:
       - /datastore/hubmsg-v2-prod/mysql:/var/lib/mysql
     networks:
@@ -76,7 +78,8 @@ services:
       PMA_HOST: mysql
       PMA_PORT: "3306"
       PMA_USER: 'hub@dev'
-      PMA_PASSWORD: ${MYSQL_APP_PASSWORD:?set MYSQL_APP_PASSWORD}
+      # PMA_PASSWORD should match MYSQL_PASSWORD.
+      PMA_PASSWORD: ${PMA_PASSWORD:-PORTAINER_SET_PMA_PASSWORD}
       PMA_ABSOLUTE_URI: 'https://msg.octotech.az/pma/'
       UPLOAD_LIMIT: 128M
     networks:
