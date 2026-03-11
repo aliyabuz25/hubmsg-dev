@@ -1,0 +1,96 @@
+services:
+  hubmsg-v2-prod:
+    image: hubmsg-v2-prod:latest
+    container_name: hubmsg-v2-prod
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      NODE_ENV: production
+      PORT: "2004"
+      TZ: Europe/Istanbul
+      PUBLIC_BASE_URL: ""
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+      MYSQL_STORAGE: "1"
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_DATABASE: hubmsg
+      MYSQL_USER: 'hub@dev'
+      MYSQL_PASSWORD: 'hub@@2026!msg**'
+    volumes:
+      - /datastore/hubmsg-v2-prod/datalar:/app/datalar
+      - /datastore/hubmsg-v2-prod/tenant_data:/app/tenant_data
+      - /datastore/hubmsg-v2-prod/uploads:/app/uploads
+      - /datastore/hubmsg-v2-prod/nginx-logs:/app/nginx-logs
+      - /datastore/hubmsg-v2-prod/backups:/app/backups
+    networks:
+      - edge
+      - internal
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=edge'
+      - 'traefik.http.routers.hubmsg-v2-prod.rule=Host(`msg.octotech.az`)'
+      - 'traefik.http.routers.hubmsg-v2-prod.entrypoints=web'
+      - 'traefik.http.services.hubmsg-v2-prod.loadbalancer.server.port=2004'
+
+  mysql:
+    image: mysql:8.4
+    container_name: hubmsg-v2-prod-mysql
+    restart: unless-stopped
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: hubmsg
+      MYSQL_USER: 'hub@dev'
+      MYSQL_PASSWORD: 'hub@@2026!msg**'
+      MYSQL_ROOT_PASSWORD: 'hub@@2026!msg**'
+    volumes:
+      - /datastore/hubmsg-v2-prod/mysql:/var/lib/mysql
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+
+  phpmyadmin:
+    image: phpmyadmin:5-apache
+    container_name: hubmsg-v2-prod-phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: "3306"
+      PMA_USER: 'hub@dev'
+      PMA_PASSWORD: 'hub@@2026!msg**'
+      PMA_ABSOLUTE_URI: 'https://msg.octotech.az/pma/'
+      UPLOAD_LIMIT: 128M
+    networks:
+      - edge
+      - internal
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=edge'
+      - 'traefik.http.routers.hubmsg-v2-prod-pma.rule=(Host(`msg.octotech.az`)) && (PathPrefix(`/pma`))'
+      - 'traefik.http.routers.hubmsg-v2-prod-pma.entrypoints=web'
+      - 'traefik.http.routers.hubmsg-v2-prod-pma.priority=110'
+      - 'traefik.http.routers.hubmsg-v2-prod-pma.middlewares=hubmsg-v2-prod-pma-strip'
+      - 'traefik.http.middlewares.hubmsg-v2-prod-pma-strip.stripprefix.prefixes=/pma'
+      - 'traefik.http.services.hubmsg-v2-prod-pma.loadbalancer.server.port=80'
+
+networks:
+  edge:
+    external: true
+  internal:
+    driver: bridge
