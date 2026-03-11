@@ -18,6 +18,16 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function buildMysqlHostCandidates() {
+  const raw = [
+    process.env.MYSQL_HOST,
+    process.env.MYSQL_SERVICE_HOST,
+    'hubmsg-v2-prod-mysql',
+    'mysql'
+  ];
+  return raw.filter((value, index, list) => value && list.indexOf(value) === index);
+}
+
 async function bootstrap() {
   if (!MYSQL_ENABLED) {
     require('./server');
@@ -27,51 +37,70 @@ async function bootstrap() {
   const mysql = require('mysql2/promise');
   const { BufferJSON, initAuthCreds } = require('@whiskeysockets/baileys');
 
-  const pool = mysql.createPool({
-    host: process.env.MYSQL_HOST || 'mysql',
-    port: Number(process.env.MYSQL_PORT || 3306),
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE || 'hubmsg',
-    waitForConnections: true,
-    connectionLimit: Number(process.env.MYSQL_CONNECTION_LIMIT || 10),
-    queueLimit: 0,
-    charset: 'utf8mb4'
-  });
+  const mysqlHosts = buildMysqlHostCandidates();
+  const mysqlPort = Number(process.env.MYSQL_PORT || 3306);
+  let pool = null;
+  let connectedHost = mysqlHosts[0];
 
   for (let attempt = 1; attempt <= MYSQL_BOOTSTRAP_MAX_ATTEMPTS; attempt += 1) {
-    try {
-      await pool.query('SELECT 1');
-      await pool.query(`
-        CREATE TABLE IF NOT EXISTS app_state (
-          state_key VARCHAR(191) PRIMARY KEY,
-          payload LONGTEXT NOT NULL,
-          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-      `);
+    for (const host of mysqlHosts) {
+      try {
+        pool = mysql.createPool({
+          host,
+          port: mysqlPort,
+          user: process.env.MYSQL_USER,
+          password: process.env.MYSQL_PASSWORD,
+          database: process.env.MYSQL_DATABASE || 'hubmsg',
+          waitForConnections: true,
+          connectionLimit: Number(process.env.MYSQL_CONNECTION_LIMIT || 10),
+          queueLimit: 0,
+          charset: 'utf8mb4'
+        });
+        await pool.query('SELECT 1');
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS app_state (
+            state_key VARCHAR(191) PRIMARY KEY,
+            payload LONGTEXT NOT NULL,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        `);
 
-      await pool.query(`
-        CREATE TABLE IF NOT EXISTS auth_state (
-          session_id VARCHAR(191) NOT NULL,
-          category VARCHAR(128) NOT NULL,
-          item_key VARCHAR(191) NOT NULL,
-          payload LONGTEXT NOT NULL,
-          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-          PRIMARY KEY (session_id, category, item_key)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-      `);
-      break;
-    } catch (error) {
-      if (!isRetryableMysqlError(error) || attempt === MYSQL_BOOTSTRAP_MAX_ATTEMPTS) {
-        throw error;
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS auth_state (
+            session_id VARCHAR(191) NOT NULL,
+            category VARCHAR(128) NOT NULL,
+            item_key VARCHAR(191) NOT NULL,
+            payload LONGTEXT NOT NULL,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (session_id, category, item_key)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        `);
+        connectedHost = host;
+        attempt = MYSQL_BOOTSTRAP_MAX_ATTEMPTS + 1;
+        break;
+      } catch (error) {
+        if (pool) {
+          try {
+            await pool.end();
+          } catch (_) { }
+          pool = null;
+        }
+        if (!isRetryableMysqlError(error) || attempt === MYSQL_BOOTSTRAP_MAX_ATTEMPTS) {
+          throw error;
+        }
+        console.warn(
+          `[bootstrap] MySQL not ready at ${host}:${mysqlPort} ` +
+          `(attempt ${attempt}/${MYSQL_BOOTSTRAP_MAX_ATTEMPTS}): ${error.code}`
+        );
       }
-      console.warn(
-        `[bootstrap] MySQL not ready at ${process.env.MYSQL_HOST || 'mysql'}:${process.env.MYSQL_PORT || 3306} ` +
-        `(attempt ${attempt}/${MYSQL_BOOTSTRAP_MAX_ATTEMPTS}): ${error.code}`
-      );
-      await delay(MYSQL_BOOTSTRAP_RETRY_MS);
     }
+    if (pool) {
+      break;
+    }
+    await delay(MYSQL_BOOTSTRAP_RETRY_MS);
   }
+
+  console.info(`[bootstrap] MySQL connected at ${connectedHost}:${mysqlPort}`);
 
   const [stateRows] = await pool.query('SELECT state_key, payload FROM app_state');
   const stateCache = new Map();
