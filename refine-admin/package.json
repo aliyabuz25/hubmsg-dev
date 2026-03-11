@@ -1,0 +1,27 @@
+{
+  "name": "refine-admin",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@refinedev/antd": "^6.0.0",
+    "@refinedev/core": "^5.0.0",
+    "@refinedev/inferencer": "^6.0.0",
+    "@refinedev/react-router": "^2.0.0",
+    "@refinedev/simple-rest": "^5.0.0",
+    "@tanstack/react-query": "^5.66.0",
+    "antd": "^5.24.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router": "^7.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.4.1",
+    "vite": "^6.2.0"
+  }
+}

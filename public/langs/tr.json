@@ -1,0 +1,87 @@
+{
+    "sidebar": {
+        "device_list": "Cihaz Listesi",
+        "add_device": "Cihaz Ekle",
+        "bulk_message": "Toplu Mesaj",
+        "statistics": "İstatistikler",
+        "support": "Destek",
+        "documentation": "Dokümantasyon",
+        "admin_panel": "ADMİN PANELİ",
+        "dealer_management": "Bayi Yönetimi",
+        "audit_log": "Denetim Kaydı",
+        "quick_activation": "Hızlı Aktivasyon",
+        "login_activity": "Giriş & Aktivite",
+        "backups": "Yedekleme",
+        "dashboard": "Panel",
+        "templates": "Mesaj Şablonları"
+    },
+    "dashboard": {
+        "title": "Cihaz Yönetimi",
+        "active_connections": "Aktif Bağlantılar",
+        "total_sessions": "Toplam Oturum",
+        "device_limit": "Cihaz Limiti",
+        "geo_regions": "Farklı Bölgeler",
+        "device_status": "Bağlı WhatsApp Cihazları",
+        "pending_messages": "Bekleyen Mesajlar",
+        "delivered": "İletilen Mesajlar",
+        "failed": "Hatalı Mesajlar"
+    },
+    "templates": {
+        "title": "Mesaj Şablonları",
+        "add_new": "Yeni Şablon Ekle",
+        "btn_add": "Ekle",
+        "name": "Şablon Adı",
+        "content": "Mesaj İçeriği",
+        "saved_templates": "Kayıtlı Şablonlar",
+        "no_templates": "Henüz şablonunuz bulunmuyor.",
+        "delete_confirm": "Bu şablonu silmek istediğinizden emin misiniz?",
+        "use": "Kullan"
+    },
+    "add_device": {
+        "title": "Yeni Bağlantı Kur",
+        "description": "WhatsApp hesabınızı bağlamak için önce bir oturum başlatın, ardından çıkan QR kodu okutun.",
+        "owner": "Hesap Sahibi",
+        "label": "Cihaz Etiketi / Adı",
+        "start_session": "Oturumu Başlat",
+        "how_to": "Nasıl Bağlanır?",
+        "step1": "Cihaz adını yazıp Oturumu Başlat düğmesine basın.",
+        "step2": "Sağ tarafta QR kod belirecektir.",
+        "step3": "Telefonunuzdan WhatsApp'ı açın.",
+        "step4": "Bağlı Cihazlar -> Cihaz Bağla yolunu izleyin.",
+        "step5": "Ekranda çıkan kodu taratın.",
+        "qr_waiting": "Bağlantı kodlarını görmek için sol taraftan oturum başlatın."
+    },
+    "bulk": {
+        "title": "Mesaj Gönder",
+        "select_template": "Şablon Seç (İsteğe bağlı)",
+        "recipients": "Numaralar",
+        "message": "Mesaj",
+        "send": "Gönder",
+        "queue_status": "Kuyruk / Son Mesajlar",
+        "recipient": "Alıcı",
+        "sender": "Gönderen",
+        "message_col": "Mesaj",
+        "status": "Durum",
+        "time": "Tarih",
+        "save": "Kaydet",
+        "cancel": "İptal"
+    },
+    "toast": {
+        "refreshing": "Yenileniyor...",
+        "enter_device_name": "Lütfen cihaz için bir ad girin.",
+        "starting": "Başlatılıyor...",
+        "session_started": "Oturum başarıyla başlatıldı, QR kod bekleniyor.",
+        "error": "Hata oluştu."
+    },
+    "common": {
+        "connected": "Bağlı",
+        "qr_pending": "QR Bekleniyor",
+        "initializing": "Hazırlanıyor...",
+        "active": "Aktif",
+        "security_notice": "Güvenlik için bu pencereyi kapatmayın.",
+        "refresh": "Yenile",
+        "logout": "Çıkış",
+        "delete": "Sil",
+        "edit": "Düzenle"
+    }
+}

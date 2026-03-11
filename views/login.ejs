@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HubMSG | Giriş</title>
+
+  <!-- Google Font: Manrope -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+  <style>
+    /* ── Light Theme: Clean & Minimal ── */
+    :root {
+      /* ── Core Palette ── */
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --surface-3: #e2e8f0;
+      --border: rgba(15, 23, 42, 0.08);
+
+      /* ── Brand Colors ── */
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-soft: rgba(59, 130, 246, 0.1);
+      --sidebar-bg: #0f172a;
+      /* Lacivert */
+
+      /* ── Semantic Colors ── */
+      --text: #0f172a;
+      --text-dim: #64748b;
+      --text-xs: #94a3b8;
+
+      --red: #ef4444;
+      --red-soft: rgba(239, 68, 68, 0.1);
+
+      /* ── Layout & UI ── */
+      --radius: 12px;
+      --radius-lg: 16px;
+      --radius-sm: 8px;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+      --transition: cubic-bezier(0.4, 0, 0.2, 1) .24s;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: var(--surface);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout */
+    .split-layout {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .split-left {
+      flex: 1;
+      background: var(--sidebar-bg);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .split-left::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.2), transparent 40%),
+        radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.1), transparent 40%);
+      pointer-events: none;
+    }
+
+    .split-right {
+      flex: 1;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .login-wrapper {
+      width: 100%;
+      max-width: 420px;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @media (max-width: 991.98px) {
+      .split-left {
+        display: none;
+      }
+
+      .split-right {
+        background: var(--bg);
+      }
+
+      .login-wrapper {
+        background: var(--surface);
+        padding: 2.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border);
+      }
+    }
+
+    /* Typography */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: inherit;
+      font-weight: 700;
+    }
+
+    .brand-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+      text-align: center;
+    }
+
+    .brand-subtitle {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.7);
+      text-align: center;
+      max-width: 440px;
+      line-height: 1.6;
+    }
+
+    .login-logo {
+      display: block;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .login-logo img {
+      height: 50px;
+      transition: var(--transition);
+    }
+
+    .login-logo img:hover {
+      transform: scale(1.05);
+    }
+
+    .login-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    .login-subtitle {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: stretch;
+      position: relative;
+    }
+
+    .form-control {
+      flex: 1;
+      background: var(--surface) !important;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      padding: 0.75rem 1rem 0.75rem 2.8rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      width: 100%;
+      outline: none;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      z-index: 10;
+      transition: var(--transition);
+    }
+
+    .input-group:focus-within .form-control {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-soft);
+    }
+
+    .input-group:focus-within .input-icon {
+      color: var(--accent);
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      font-weight: 600;
+      user-select: none;
+    }
+
+    .checkbox-label input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      padding: 0.8rem 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(59, 130, 246, 0.4);
+    }
+
+    /* Error Alert */
+    .alert-danger {
+      background: var(--red-soft);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: var(--red);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+
+    .alert-danger i {
+      margin-top: 0.1rem;
+      font-size: 1.1rem;
+    }
+
+    .alert-danger .close-btn {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: var(--red);
+      opacity: 0.7;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .alert-danger .close-btn:hover {
+      opacity: 1;
+    }
+
+    /* Premium OTP Styling */
+    .otp-icon-wrapper {
+      width: 64px;
+      height: 64px;
+      background: var(--accent-soft);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: var(--accent);
+      font-size: 28px;
+    }
+
+    .otp-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 24px 0 32px;
+    }
+
+    .otp-input {
+      width: 48px;
+      height: 56px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      transition: all 0.2s ease;
+      outline: none;
+      box-shadow: var(--shadow-sm);
+      font-family: inherit;
+    }
+
+    .otp-input:focus {
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: 0 0 0 4px var(--accent-soft);
+      transform: translateY(-2px);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-dim);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: var(--transition);
+      margin-top: 1.5rem;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="split-layout">
+    <div class="split-left animate__animated animate__fadeIn">
+      <!-- Illustrative elements or simply brand name -->
+      <div style="text-align: center; z-index: 1;">
+        <div
+          style="display:inline-flex; align-items:center; justify-content:center; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 24px; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 8px 32px rgba(0,0,0,0.2);">
+          <i class="fas fa-paper-plane" style="font-size: 36px; color: #fff;"></i>
+        </div>
+        <h1 class="brand-title">HubMSG İdarəetmə Paneli</h1>
+        <p class="brand-subtitle">WhatsApp və digər kommunikasiya kanallarınızı tək mərkəzdən idarə edin, asanlıqla
+          kampaniyalar yaradın.</p>
+      </div>
+    </div>
+
+    <div class="split-right">
+      <div class="login-wrapper">
+        <a href="#" class="login-logo">
+          <img src="/img/darklogo.png" alt="HubMSG">
+        </a>
+
+        <% if (error) { %>
+          <div class="alert-danger animate__animated animate__headShake" id="error-alert">
+            <i class="fas fa-exclamation-circle"></i>
+            <div>
+              <div style="font-weight: 700; margin-bottom: 2px;">Xəta!</div>
+              <%= error %>
+            </div>
+            <button type="button" class="close-btn"
+              onclick="document.getElementById('error-alert').style.display='none'">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <% } %>
+
+            <% if (typeof otp !=='undefined' && otp) { %>
+              <form action="/verify-otp" method="post" id="otp-form" class="animate__animated animate__fadeIn">
+                <div class="text-center">
+                  <div class="otp-icon-wrapper">
+                    <i class="fas fa-shield-alt"></i>
+                  </div>
+                  <h1 class="login-title">İki Mərhələli Təsdiq</h1>
+                  <p class="login-subtitle">
+                    WhatsApp hesabınıza göndərilən <br>6 rəqəmli doğrulama kodunu daxil edin.
+                  </p>
+                </div>
+
+                <div class="otp-container">
+                  <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autofocus
+                    required>
+                  <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                  <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                  <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                  <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                  <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                </div>
+
+                <input type="hidden" name="otp" id="full-otp">
+
+                <button type="submit" class="btn-primary">Təsdiqlə və Daxil Ol <i
+                    class="fas fa-arrow-right ml-1"></i></button>
+
+                <div class="text-center">
+                  <a href="/login" class="back-link"><i class="fas fa-arrow-left"></i> Geri dön</a>
+                </div>
+              </form>
+              <% } else { %>
+                <div class="text-center animate__animated animate__fadeIn">
+                  <h1 class="login-title">Xoş Gəldiniz</h1>
+                  <p class="login-subtitle">Sistemə daxil olmaq üçün məlumatlarınızı daxil edin</p>
+                </div>
+
+                <form action="/login" method="post" class="animate__animated animate__fadeIn">
+                  <div class="form-group">
+                    <div class="input-group">
+                      <i class="fas fa-user input-icon"></i>
+                      <input type="text" name="username" class="form-control" placeholder="İstifadəçi adı"
+                        value="<%= typeof username !== 'undefined' ? username : '' %>" required autofocus>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="input-group">
+                      <i class="fas fa-lock input-icon"></i>
+                      <input type="password" name="secret" class="form-control" placeholder="API Açarı və ya Parol"
+                        required>
+                    </div>
+                  </div>
+
+                  <div class="form-options">
+                    <label class="checkbox-label" for="remember">
+                      <input type="checkbox" id="remember">
+                      Xatırla məni
+                    </label>
+                  </div>
+
+                  <button type="submit" class="btn-primary">
+                    Sistemə Daxil Ol <i class="fas fa-sign-in-alt ml-1"></i>
+                  </button>
+                </form>
+                <% } %>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    (function () {
+      const STORAGE_KEY = 'waa-username';
+      const usernameInput = document.querySelector('input[name="username"]');
+      const loginForm = document.querySelector('form[action="/login"]');
+
+      function safeGetUsername() {
+        try { return localStorage.getItem(STORAGE_KEY); } catch (err) { return null; }
+      }
+
+      function safeSetUsername(value) {
+        if (!value) return;
+        try { localStorage.setItem(STORAGE_KEY, value); } catch (err) { }
+      }
+
+      const storedUsername = safeGetUsername();
+      if (usernameInput && storedUsername && !usernameInput.value) {
+        usernameInput.value = storedUsername;
+      }
+
+      loginForm?.addEventListener('submit', () => {
+        if (!usernameInput) return;
+        const trimmed = usernameInput.value.trim();
+        if (trimmed) safeSetUsername(trimmed);
+      });
+
+      // OTP Logic
+      const otpInputs = document.querySelectorAll('.otp-input');
+      const otpForm = document.getElementById('otp-form');
+      const fullOtpInput = document.getElementById('full-otp');
+
+      if (otpInputs.length > 0) {
+        otpInputs.forEach((input, index) => {
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !input.value && index > 0) {
+              otpInputs[index - 1].focus();
+            }
+          });
+
+          input.addEventListener('input', (e) => {
+            const val = e.target.value;
+            if (val && /^[0-9]$/.test(val)) {
+              if (index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus();
+              }
+            } else if (val && val.length > 1) {
+              const value = val.replace(/\D/g, '').split('');
+              value.forEach((char, i) => {
+                if (index + i < otpInputs.length) {
+                  otpInputs[index + i].value = char;
+                }
+              });
+              const nextIndex = Math.min(index + value.length, otpInputs.length - 1);
+              otpInputs[nextIndex].focus();
+            } else {
+              e.target.value = '';
+            }
+            updateFullOtp();
+          });
+
+          input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pasteData = (e.clipboardData || window.clipboardData).getData('text');
+            const digits = pasteData.replace(/\D/g, '').split('');
+
+            digits.forEach((digit, i) => {
+              if (index + i < otpInputs.length) {
+                otpInputs[index + i].value = digit;
+              }
+            });
+
+            const nextFocus = Math.min(index + digits.length, otpInputs.length - 1);
+            if (otpInputs[nextFocus]) otpInputs[nextFocus].focus();
+            updateFullOtp();
+          });
+        });
+
+        function updateFullOtp() {
+          let code = '';
+          otpInputs.forEach(inp => code += inp.value);
+          if (fullOtpInput) fullOtpInput.value = code;
+        }
+
+        otpForm.addEventListener('submit', (e) => {
+          updateFullOtp();
+          if (fullOtpInput.value.length !== 6) {
+            e.preventDefault();
+            alert('Zəhmət olmasa 6 rəqəmli kodu tam daxil edin.');
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+
+</html>

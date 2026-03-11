@@ -1,0 +1,3445 @@
+<!DOCTYPE html>
+<html lang="az">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HubMSG | İdarəetmə Paneli</title>
+
+    <!-- Google Font: Manrope -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+    <!-- Font Awesome (local fallback, no CDN dependency) -->
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.0/css/OverlayScrollbars.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- MetisMenu (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/metismenujs@1.4.0/dist/metismenujs.min.css">
+
+    <style>
+        /* ── Light Theme: Clean & Minimal ── */
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-2: #f1f5f9;
+            --border: rgba(0, 0, 0, 0.06);
+            --text: #1e293b;
+            --text-dim: #64748b;
+            --accent: #3b82f6;
+            --accent-soft: rgba(59, 130, 246, 0.08);
+            --green: #10b981;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+            --blue: #3b82f6;
+            --radius: 12px;
+            --transition: .2s ease;
+            --sidebar-width: 264px;
+            --sidebar-collapsed-width: 68px;
+            --sidebar-icon-bar-width: 68px;
+        }
+
+        /* ── Utility ── */
+        .admin-only {
+            display: none !important;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* ── Base ── */
+        body,
+        .wrapper,
+        .content-wrapper {
+            background: var(--bg) !important;
+            color: var(--text) !important;
+        }
+
+        .main-footer,
+        .sidebar-custom {
+            display: none !important;
+        }
+
+        /* ── Global text visibility for light theme ── */
+        p,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        span,
+        label,
+        li,
+        td,
+        th,
+        div {
+            color: inherit;
+        }
+
+        .close {
+            color: var(--text) !important;
+            opacity: 0.5;
+            text-shadow: none !important;
+        }
+
+        .close:hover {
+            color: var(--text) !important;
+            opacity: 0.8;
+        }
+
+        .modal-title {
+            color: var(--text) !important;
+        }
+
+        .modal-body {
+            color: var(--text) !important;
+        }
+
+        .brand-link {
+            color: var(--text) !important;
+        }
+
+        .dropdown-menu {
+            background: var(--surface) !important;
+            border: 1px solid var(--border) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .dropdown-item {
+            color: var(--text) !important;
+        }
+
+        .dropdown-item:hover {
+            background: var(--surface-2) !important;
+        }
+
+        .page-item .page-link {
+            background: var(--surface) !important;
+            color: var(--text) !important;
+            border-color: var(--border) !important;
+        }
+
+        .page-item.active .page-link {
+            background: var(--accent) !important;
+            color: #fff !important;
+            border-color: var(--accent) !important;
+        }
+
+        select option {
+            background: var(--surface) !important;
+            color: var(--text) !important;
+        }
+
+        .nav-sidebar p {
+            color: inherit !important;
+            margin: 0 !important;
+            min-width: 0;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            line-height: 1.2;
+        }
+
+        .info-box-icon i {
+            color: var(--text-dim) !important;
+        }
+
+        /* ── Header Redesign ── */
+        .main-header {
+            background: var(--surface) !important;
+            border-bottom: 1px solid var(--border) !important;
+            box-shadow: none !important;
+            padding: 0 0.5rem !important;
+            height: 56px !important;
+            display: flex !important;
+            align-items: center;
+            z-index: 1037;
+        }
+
+        .main-header .nav-link:hover {
+            color: var(--accent) !important;
+            transform: scale(1.05);
+        }
+
+        /* ── Sidebar Redesign ── */
+        .main-sidebar {
+            background: var(--surface) !important;
+            border-right: 1px solid var(--border) !important;
+            box-shadow: none !important;
+            width: var(--sidebar-width) !important;
+            overflow: hidden !important;
+            transition: width 0.3s ease !important;
+        }
+
+        @media (min-width: 992px) {
+
+            body:not(.layout-top-nav) .content-wrapper,
+            body:not(.layout-top-nav) .main-header {
+                margin-left: var(--sidebar-width) !important;
+                transition: margin-left 0.3s ease !important;
+            }
+        }
+
+        .main-sidebar {
+            background: var(--surface) !important;
+            border-right: 1px solid var(--border) !important;
+            box-shadow: none !important;
+            width: var(--sidebar-width) !important;
+            overflow: hidden !important;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            z-index: 1038;
+        }
+
+        @media (min-width: 992px) {
+
+            body:not(.layout-top-nav) .content-wrapper,
+            body:not(.layout-top-nav) .main-header {
+                margin-left: var(--sidebar-width) !important;
+                transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+        }
+
+        .sidebar-wrapper {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Icon Bar (Left - Collapsed State) */
+        .sidebar-icon-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-icon-bar-width);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            gap: 20px;
+            background: #f7f9fc;
+            border-right: 1px solid rgba(15, 23, 42, 0.08);
+            z-index: 2;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        body.sidebar-collapse .sidebar-icon-bar {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .icon-bar-item {
+            color: #64748b;
+            font-size: 17px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            border: 1px solid transparent;
+        }
+
+        .icon-bar-item:hover {
+            background: #ffffff;
+            color: #0f172a;
+            border-color: rgba(15, 23, 42, 0.08);
+        }
+
+        .icon-bar-item.active {
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.12);
+            border-color: rgba(37, 99, 235, 0.2);
+        }
+
+        .icon-bar-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--text);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        /* Nav Panel (Right - Expanded State) */
+        .sidebar-nav-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: #fbfcff;
+            border-left: 1px solid rgba(15, 23, 42, 0.06);
+            overflow: hidden;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        body.sidebar-collapse .sidebar-nav-panel {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Adjust main-sidebar width based on state */
+        body.sidebar-collapse .main-sidebar {
+            width: var(--sidebar-icon-bar-width) !important;
+        }
+
+        @media (min-width: 992px) {
+
+            body.sidebar-collapse .content-wrapper,
+            body.sidebar-collapse .main-header {
+                margin-left: var(--sidebar-icon-bar-width) !important;
+            }
+        }
+
+        .nav-panel-header {
+            padding: 16px 14px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+        }
+
+        .workspace-info {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .workspace-info:hover .workspace-name i {
+            color: var(--accent);
+            opacity: 1 !important;
+            transform: scale(1.1);
+        }
+
+        .workspace-name i {
+            transition: all 0.2s ease;
+        }
+
+        .workspace-name {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .workspace-logo {
+            height: 30px;
+            width: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        .workspace-members {
+            font-size: 11px;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        /* Search */
+        .nav-panel-search {
+            padding: 0 12px 8px;
+            margin-top: 8px;
+        }
+
+        .search-box {
+            background: #ffffff;
+            border-radius: 11px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            gap: 10px;
+            color: var(--text-dim);
+        }
+
+        .search-box i {
+            font-size: 14px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 13px;
+            width: 100%;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .search-shortcut {
+            display: none;
+        }
+
+        /* Sidebar Content */
+        .sidebar {
+            flex: 1;
+            padding: 2px 8px 0 !important;
+            overflow: hidden;
+            height: auto !important;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .sidebar>nav {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+
+        .sidebar>nav::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar>nav::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.45);
+            border-radius: 6px;
+        }
+
+        .nav-sidebar .nav-link {
+            padding: 8px 10px !important;
+            margin: 1px 0 !important;
+            border-radius: 10px !important;
+            font-size: 12.5px !important;
+            font-weight: 500;
+            color: #334155 !important;
+            display: flex;
+            align-items: center;
+            min-width: 0;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
+        }
+
+        .nav-sidebar .nav-link:active {
+            transform: scale(0.98);
+        }
+
+        .nav-sidebar .nav-link:hover {
+            background: #ffffff !important;
+            border-color: rgba(148, 163, 184, 0.25);
+        }
+
+        .nav-sidebar .nav-link.active {
+            background: #ffffff !important;
+            color: #0f172a !important;
+            font-weight: 600;
+            border-color: rgba(37, 99, 235, 0.28);
+            box-shadow: 0 1px 0 rgba(37, 99, 235, 0.08);
+        }
+
+        .nav-sidebar .nav-icon {
+            font-size: 14px !important;
+            margin-right: 10px !important;
+            width: 18px !important;
+            color: #64748b;
+            transition: color 0.2s ease;
+        }
+
+        .nav-sidebar .nav-link.active .nav-icon {
+            color: #2563eb;
+        }
+
+        .nav-sidebar .nav-header {
+            font-size: 11px !important;
+            font-weight: 600;
+            color: var(--text-dim) !important;
+            padding: 20px 12px 8px !important;
+            margin: 0 !important;
+            border-top: none !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-header-action {
+            font-size: 14px;
+            color: var(--text-dim);
+            cursor: pointer;
+        }
+
+        /* Parent Treeview Styles (Section Headers) */
+        .nav-sidebar .has-treeview>.nav-link {
+            font-weight: 700 !important;
+            font-size: 11px !important;
+            letter-spacing: 0.05em;
+            color: #64748b !important;
+            padding: 22px 10px 8px !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .nav-sidebar .has-treeview.mm-active>.nav-link,
+        .nav-sidebar .has-treeview.menu-open>.nav-link {
+            background: transparent !important;
+            color: #0f172a !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .nav-sidebar .has-treeview:first-child>.nav-link {
+            padding-top: 8px !important;
+        }
+
+        .nav-sidebar .has-treeview>.nav-link:hover {
+            color: #0f172a !important;
+            background: transparent !important;
+            border-color: transparent !important;
+        }
+
+        .nav-sidebar .has-treeview>.nav-link:active {
+            transform: none !important;
+        }
+
+        /* Hide parent icons to make it look like a clean label */
+        .nav-sidebar .has-treeview>.nav-link .nav-icon {
+            display: none !important;
+        }
+
+        .nav-sidebar .has-treeview>.nav-link p {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 700;
+            gap: 8px;
+        }
+
+        .nav-sidebar .has-treeview>.nav-link p>i.right {
+            flex: 0 0 auto;
+            margin-left: 8px;
+            font-size: 12px;
+            opacity: 0.6;
+            transition: transform 0.25s ease;
+        }
+
+        .nav-sidebar .has-treeview.mm-active>.nav-link p>i.right,
+        .nav-sidebar .has-treeview.menu-open>.nav-link p>i.right {
+            transform: rotate(-90deg);
+            opacity: 1;
+        }
+
+        /* Submenu Container */
+        .nav-sidebar .nav-treeview {
+            padding-left: 0;
+            margin-top: 0px;
+            margin-bottom: 6px;
+            position: relative;
+        }
+
+        .nav-sidebar .nav-treeview::before {
+            content: "";
+            position: absolute;
+            left: 14px;
+            top: 2px;
+            bottom: 2px;
+            width: 1.5px;
+            background: rgba(148, 163, 184, 0.22);
+            border-radius: 2px;
+        }
+
+        .nav-sidebar .nav-treeview.mm-collapse:not(.mm-show) {
+            display: none !important;
+        }
+
+        .nav-sidebar .mm-active>.nav-treeview,
+        .nav-sidebar .menu-open>.nav-treeview {
+            display: block !important;
+        }
+
+        /* Submenu Items */
+        .nav-sidebar .nav-treeview>.nav-item {
+            position: relative;
+        }
+
+        /* Submenu Links */
+        .nav-sidebar .nav-treeview>.nav-item>.nav-link {
+            padding: 8px 10px 8px 30px !important;
+            margin: 2px 0 !important;
+            font-size: 12.5px !important;
+            color: #475569 !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            position: relative;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-sidebar .nav-treeview>.nav-item>.nav-link::before {
+            content: "";
+            position: absolute;
+            left: 12.5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: rgba(148, 163, 184, 0.4);
+            transition: all 0.2s ease;
+            box-shadow: 0 0 0 3px #fbfcff;
+            z-index: 2;
+        }
+
+        .nav-sidebar .nav-treeview>.nav-item>.nav-link:hover {
+            color: #0f172a !important;
+            background: rgba(241, 245, 249, 0.5) !important;
+        }
+
+        .nav-sidebar .nav-treeview>.nav-item>.nav-link:hover::before {
+            background: #64748b;
+            transform: translateY(-50%) scale(1.4);
+            box-shadow: 0 0 0 3px rgba(241, 245, 249, 1);
+        }
+
+        .nav-sidebar .nav-treeview>.nav-item>.nav-link.active {
+            color: #2563eb !important;
+            font-weight: 600;
+            background: rgba(37, 99, 235, 0.05) !important;
+        }
+
+        .nav-sidebar .nav-treeview>.nav-item>.nav-link.active::before {
+            background: #2563eb;
+            box-shadow: 0 0 0 3px #fbfcff, 0 0 0 4px rgba(37, 99, 235, 0.2);
+            width: 5px;
+            height: 5px;
+            left: 12px;
+        }
+
+        /* Remove original sub-icons */
+        .nav-sidebar .nav-treeview .nav-icon {
+            display: none !important;
+        }
+
+        /* Update Card */
+        .sidebar-update-card {
+            margin: 20px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            position: relative;
+            display: none;
+        }
+
+        .update-card-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .update-card-text {
+            font-size: 12px;
+            color: var(--text-dim);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .update-card-action {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Profile Footer */
+        .sidebar-footer {
+            padding: 12px 14px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #ffffff;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .sidebar-footer:hover {
+            background: #f8fafc;
+        }
+
+        .footer-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid rgba(15, 23, 42, 0.06);
+        }
+
+        .footer-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .footer-name {
+            font-weight: 700;
+            font-size: 13.5px;
+            color: #0f172a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+        }
+
+        .footer-email {
+            font-size: 11.5px;
+            color: #64748b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 2px;
+        }
+
+        /* ── Cards ── */
+        .card {
+            background: var(--surface) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: var(--radius) !important;
+            box-shadow: none !important;
+        }
+
+        .card-header {
+            background: transparent !important;
+            border-bottom: 1px solid var(--border) !important;
+        }
+
+        .card-title {
+            color: var(--text) !important;
+            font-weight: 600;
+        }
+
+        .card-footer {
+            background: transparent !important;
+            border-top: 1px solid var(--border) !important;
+        }
+
+        .card-outline {
+            border-top: 2px solid var(--accent) !important;
+        }
+
+        /* ── Info Boxes ── */
+        .info-box {
+            background: var(--surface) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: var(--radius) !important;
+            box-shadow: none !important;
+            min-height: 80px;
+        }
+
+        .info-box .info-box-icon {
+            background: var(--surface-2) !important;
+            border-radius: 10px !important;
+            width: 55px;
+            height: 55px;
+        }
+
+        .info-box .info-box-number {
+            color: var(--text);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .info-box .info-box-text {
+            color: var(--text-dim);
+        }
+
+        /* Small stat boxes */
+        .small-box {
+            border-radius: var(--radius) !important;
+            border: 1px solid var(--border) !important;
+        }
+
+        .small-box.bg-info {
+            background: var(--surface) !important;
+            border-left: 3px solid var(--blue) !important;
+        }
+
+        .small-box.bg-warning {
+            background: var(--surface) !important;
+            border-left: 3px solid var(--yellow) !important;
+        }
+
+        .small-box.bg-success {
+            background: var(--surface) !important;
+            border-left: 3px solid var(--green) !important;
+        }
+
+        .small-box.bg-danger {
+            background: var(--surface) !important;
+            border-left: 3px solid var(--red) !important;
+        }
+
+        .small-box.stat-box-neutral {
+            background: var(--surface) !important;
+            color: var(--text) !important;
+            border-left-width: 3px !important;
+            border-left-style: solid !important;
+        }
+
+        .small-box.stat-box-neutral.stat-box-primary {
+            border-left-color: var(--blue) !important;
+        }
+
+        .small-box.stat-box-neutral.stat-box-maroon {
+            border-left-color: #a63a50 !important;
+        }
+
+        .small-box.stat-box-neutral.stat-box-secondary {
+            border-left-color: #6c757d !important;
+        }
+
+        .small-box .inner h3 {
+            color: var(--text);
+        }
+
+        .small-box .inner p {
+            color: var(--text-dim);
+        }
+
+        .small-box .icon i {
+            color: rgba(0, 0, 0, 0.08) !important;
+        }
+
+        .small-box .small-box-footer {
+            color: var(--text-dim) !important;
+            background: var(--surface-2) !important;
+        }
+
+        /* ── Tables ── */
+        .table {
+            color: var(--text) !important;
+        }
+
+        .table thead th {
+            background: var(--surface-2) !important;
+            color: var(--text-dim) !important;
+            border-bottom: 1px solid var(--border) !important;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .table td,
+        .table th {
+            border-color: var(--border) !important;
+        }
+
+        .table-hover tbody tr:hover {
+            background: var(--surface-2) !important;
+        }
+
+        .device-kpi-card {
+            border-radius: 12px !important;
+            border: 1px solid rgba(15, 23, 42, 0.08) !important;
+            background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%) !important;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04) !important;
+        }
+
+        .device-kpi-card .card-body {
+            padding: 14px !important;
+            gap: 10px;
+        }
+
+        .device-kpi-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            background: #f6f8fc;
+            color: #475569;
+        }
+
+        .device-kpi-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .03em;
+            text-transform: uppercase;
+            color: #64748b !important;
+            margin-bottom: 2px;
+        }
+
+        .device-kpi-value {
+            font-size: 1.4rem;
+            line-height: 1;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .device-table-card {
+            border-radius: 14px !important;
+            overflow: hidden;
+            border: 1px solid rgba(15, 23, 42, 0.08) !important;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05) !important;
+        }
+
+        .device-table-header {
+            background: #fff !important;
+            border-bottom: 1px solid var(--border) !important;
+            padding: .9rem 1.25rem !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .device-table-header .card-title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .device-table {
+            font-size: 13px;
+            table-layout: fixed;
+        }
+
+        .device-table thead th {
+            border-top: none !important;
+            background: #f7f9fc !important;
+            color: var(--text-dim) !important;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            padding: 12px 10px !important;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .device-table tbody td {
+            padding: 12px 10px !important;
+            vertical-align: middle;
+            border-top: 1px solid rgba(15, 23, 42, 0.07) !important;
+        }
+
+        .device-table tbody tr:nth-child(even) {
+            background: rgba(248, 250, 252, 0.7);
+        }
+
+        .device-table tbody tr:hover {
+            background: rgba(241, 245, 249, 0.95) !important;
+        }
+
+        .device-table .col-id {
+            width: 88px;
+            padding-left: 1.25rem !important;
+        }
+
+        .device-table th:nth-child(2),
+        .device-table td:nth-child(2) {
+            width: 230px;
+        }
+
+        .device-table th:nth-child(3),
+        .device-table td:nth-child(3) {
+            width: 180px;
+        }
+
+        .device-table th:nth-child(4),
+        .device-table td:nth-child(4) {
+            width: 170px;
+        }
+
+        .device-table th:nth-child(6),
+        .device-table td:nth-child(6) {
+            width: 170px;
+        }
+
+        .device-table .col-action {
+            text-align: right;
+            padding-right: 1.25rem !important;
+            width: 90px;
+        }
+
+        .device-id-text {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .device-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: rgba(59, 130, 246, 0.12);
+            color: #2563eb;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .device-row-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.25;
+        }
+
+        .device-row-phone {
+            font-size: 12px;
+            color: var(--text-dim);
+            line-height: 1.2;
+        }
+
+        .device-platform-main {
+            font-size: 14px;
+            color: var(--text);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+
+        .device-platform-main i {
+            width: 14px;
+            text-align: center;
+        }
+
+        .device-platform-os {
+            display: block;
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 2px;
+            line-height: 1.2;
+        }
+
+        .device-platform-os .os-icon {
+            width: 14px;
+            margin-right: 4px;
+            text-align: center;
+            opacity: .9;
+        }
+
+        .device-platform-os .os-android {
+            color: #16a34a;
+        }
+
+        .device-platform-os .os-ios {
+            color: #0f172a;
+        }
+
+        .device-platform-os .os-windows {
+            color: #2563eb;
+        }
+
+        .device-platform-os .os-macos {
+            color: #475569;
+        }
+
+        .device-platform-os .os-linux {
+            color: #1f2937;
+        }
+
+        .device-platform-os .os-unknown {
+            color: #94a3b8;
+        }
+
+        .device-country-badge {
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text-dim);
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 999px;
+            padding: 4px 10px;
+        }
+
+        .device-owner-badge {
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text-dim);
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 999px;
+            padding: 3px 8px;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .device-ready-time {
+            color: var(--text-dim);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .status-pill-active {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(5, 150, 105, 0.12);
+            color: #047857;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 9px;
+            white-space: nowrap;
+        }
+
+        .status-pill-active i {
+            font-size: 6px;
+        }
+
+        .device-table-search-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: min(340px, 100%);
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            border-radius: 9px;
+            padding: 0 10px;
+            height: 38px;
+        }
+
+        .device-table-search-wrap i {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        .device-table-search-wrap input {
+            width: 100%;
+            border: 0;
+            background: transparent;
+            color: var(--text);
+            font-size: 13px;
+            padding: 0;
+            outline: 0;
+        }
+
+        .device-table-pagination {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px 12px;
+        }
+
+        .device-table-pagination .btn {
+            min-width: 92px;
+            height: 32px;
+            padding: 0 12px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+
+        .device-delete-btn {
+            color: #b91c1c !important;
+            opacity: .8;
+            transition: opacity .15s ease, transform .15s ease;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: rgba(185, 28, 28, 0.06);
+        }
+
+        .device-delete-btn:hover {
+            opacity: 1;
+            transform: translateY(-1px);
+            background: rgba(185, 28, 28, 0.12);
+        }
+
+        .device-table-page-info {
+            min-width: 72px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dim);
+        }
+
+        .device-table-pagination .btn:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+        }
+
+        .sm-kpi-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface);
+            padding: 12px 14px;
+        }
+
+        .sm-kpi-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .sm-kpi-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.15;
+        }
+
+        .sm-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .sm-status.healthy {
+            background: rgba(16, 185, 129, 0.14);
+            color: #047857;
+        }
+
+        .sm-status.running {
+            background: rgba(59, 130, 246, 0.14);
+            color: #1d4ed8;
+        }
+
+        .sm-status.delayed,
+        .sm-status.unknown {
+            background: rgba(245, 158, 11, 0.16);
+            color: #92400e;
+        }
+
+        .sm-status.error {
+            background: rgba(239, 68, 68, 0.14);
+            color: #b91c1c;
+        }
+
+        #startup-loader {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(248, 250, 252, 0.9);
+            backdrop-filter: blur(2px);
+            z-index: 2000;
+            transition: opacity .2s ease, visibility .2s ease;
+        }
+
+        #startup-loader.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .startup-loader-ring {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 3px solid rgba(100, 116, 139, 0.18);
+            border-top-color: var(--accent);
+            animation: startup-spin 0.9s linear infinite;
+        }
+
+        @keyframes startup-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        @media (max-width: 767.98px) {
+            .device-table-header {
+                align-items: stretch;
+            }
+
+            .device-table-search-wrap {
+                width: 100%;
+            }
+        }
+
+        .bg-light {
+            background: var(--surface-2) !important;
+            color: var(--text-dim) !important;
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all var(--transition);
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent) !important;
+            color: #fff !important;
+            border: none !important;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.15);
+        }
+
+        .btn-success {
+            background: var(--green) !important;
+            color: #fff !important;
+            border: none !important;
+        }
+
+        .btn-danger {
+            background: var(--red) !important;
+            color: #fff !important;
+            border: none !important;
+        }
+
+        .btn-info {
+            background: var(--blue) !important;
+            color: #fff !important;
+            border: none !important;
+        }
+
+        .btn-warning {
+            background: var(--yellow) !important;
+            color: #fff !important;
+            border: none !important;
+        }
+
+        .btn-secondary {
+            background: var(--surface-2) !important;
+            color: var(--text-dim) !important;
+            border: 1px solid var(--border) !important;
+        }
+
+        .btn-secondary:hover {
+            color: var(--text) !important;
+        }
+
+        /* ── Badges ── */
+        .badge {
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, .12) !important;
+            color: var(--green) !important;
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, .12) !important;
+            color: var(--yellow) !important;
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, .12) !important;
+            color: var(--red) !important;
+        }
+
+        .badge-info {
+            background: rgba(59, 130, 246, .12) !important;
+            color: var(--blue) !important;
+        }
+
+        /* ── Forms ── */
+        .form-control,
+        .custom-select,
+        .input-group-text {
+            background: var(--surface-2) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--text) !important;
+            border-radius: 8px;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent) !important;
+            box-shadow: none !important;
+        }
+
+        /* ── Modals ── */
+        .modal-content {
+            background: var(--surface) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 16px;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border) !important;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border) !important;
+        }
+
+        /* ── Alerts ── */
+        .alert-info {
+            background: rgba(59, 130, 246, .1) !important;
+            border: 1px solid rgba(59, 130, 246, .2) !important;
+            color: var(--text) !important;
+        }
+
+        /* ── Toast ── */
+        #wa-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+        }
+
+        #wa-toast .card {
+            box-shadow: none !important;
+        }
+
+        /* ── Sidebar footer ── */
+        .sidebar-custom {
+            border-top: 1px solid var(--border) !important;
+            padding: 12px !important;
+        }
+
+        .sidebar-custom .dropdown-menu {
+            background: var(--surface-2) !important;
+            border: 1px solid var(--border) !important;
+        }
+
+        .sidebar-custom .dropdown-item {
+            color: var(--text) !important;
+        }
+
+        .sidebar-custom .dropdown-item:hover {
+            background: var(--surface) !important;
+        }
+
+        /* ── Misc overrides ── */
+        .text-muted {
+            color: var(--text-dim) !important;
+        }
+
+        .bg-white {
+            background: var(--surface) !important;
+        }
+
+        label {
+            color: var(--text-dim);
+        }
+
+        .content-header h1 {
+            color: var(--text);
+        }
+
+        a {
+            color: var(--accent);
+        }
+
+        a:hover {
+            color: var(--accent);
+            filter: brightness(1.2);
+        }
+
+        /* ── Minimal Log Table ── */
+        .table-logs thead th {
+            border-top: 0;
+            background: transparent !important;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            padding: 10px 12px !important;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border) !important;
+        }
+
+        .table-logs td {
+            vertical-align: middle !important;
+            border-top: 1px solid var(--border);
+            padding: 10px 12px !important;
+            font-size: 13px;
+        }
+
+        .table-logs tbody tr:hover {
+            background: var(--surface-2) !important;
+        }
+
+        .log-from {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .log-to {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .log-arrow {
+            color: var(--text-dim);
+            margin: 0 2px;
+            font-size: 11px;
+        }
+
+        .log-detail-sub {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+
+
+        /* ── Premium polish ── */
+        body {
+            font-family: "Manrope", "Segoe UI", sans-serif !important;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: none;
+        }
+
+        .content-wrapper {
+            background: var(--bg) !important;
+        }
+
+        .main-header.navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1040;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.84) !important;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06) !important;
+        }
+
+        .main-sidebar {
+            background: var(--surface) !important;
+        }
+
+        .card,
+        .info-box,
+        .small-box,
+        .modal-content,
+        .table-responsive {
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05) !important;
+        }
+
+        .card-header {
+            padding-top: 0.9rem !important;
+            padding-bottom: 0.9rem !important;
+        }
+
+        .btn {
+            letter-spacing: .01em;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .form-control,
+        .custom-select,
+        select.form-control {
+            min-height: 38px;
+        }
+
+        .form-control:focus,
+        .custom-select:focus {
+            border-color: rgba(59, 130, 246, .55) !important;
+            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, .13) !important;
+            background: #fff !important;
+        }
+
+        .table-logs tbody tr {
+            transition: background-color .18s ease;
+        }
+
+        .content-header {
+            padding-top: 1.25rem;
+        }
+
+        @media (max-width: 991.98px) {
+            .main-sidebar {
+                width: min(88vw, var(--sidebar-width)) !important;
+            }
+
+            body .content-wrapper,
+            body .main-header,
+            body .main-footer {
+                margin-left: 0 !important;
+            }
+
+            .content-header .row {
+                row-gap: 12px;
+            }
+
+            .content-header .col-sm-6.text-right {
+                text-align: left !important;
+            }
+
+            #wa-toast {
+                right: 12px;
+                left: 12px;
+                bottom: 12px;
+            }
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--surface-2);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-dim);
+        }
+    </style>
+
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div id="startup-loader" aria-live="polite" aria-label="Yüklənir">
+        <div class="startup-loader-ring" role="status" aria-hidden="true"></div>
+    </div>
+    <div class="wrapper">
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-light">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button" aria-label="Toggle Sidebar">
+                        <i class="fas fa-bars"></i>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/logout" role="button">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+
+        <aside class="main-sidebar">
+            <div class="sidebar-wrapper">
+                <!-- Slim Icon Bar -->
+                <div class="sidebar-icon-bar d-none d-md-flex">
+                    <div class="icon-bar-logo" data-widget="pushmenu">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="icon-bar-item active" onclick="switchTab('devices-section')"
+                        data-target="devices-section" title="Panel">
+                        <i class="fas fa-th-large"></i>
+                    </div>
+                    <div class="icon-bar-item" onclick="switchTab('bulk-section')" data-target="bulk-section"
+                        title="Toplu Mesaj">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div class="icon-bar-item" onclick="switchTab('templates-section')" data-target="templates-section"
+                        title="Mesaj Şablonları">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="icon-bar-item" onclick="switchTab('statistics-section')"
+                        data-target="statistics-section" title="Statistikalar">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="icon-bar-item" onclick="switchTab('security-section')" data-target="security-section"
+                        title="Təhlükəsizlik">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="mt-auto icon-bar-item">
+                        <a href="/logout" style="color: inherit;"><i class="fas fa-sign-out-alt"></i></a>
+                    </div>
+                </div>
+
+                <!-- Nav Panel -->
+                <div class="sidebar-nav-panel">
+                    <div class="nav-panel-header">
+                        <div class="workspace-info" data-widget="pushmenu" style="cursor: pointer;">
+                            <img src="/darklogo.png" alt="HubMSG" class="workspace-logo">
+                        </div>
+                    </div>
+
+                    <div class="nav-panel-search">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Axtar" id="sidebar-search-input">
+                            <span class="search-shortcut">⌘K</span>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Content -->
+                    <div class="sidebar">
+                        <!-- Sidebar Menu -->
+                        <nav class="mt-2">
+                            <ul id="sidebar-menu" class="metismenu nav nav-pills nav-sidebar flex-column" role="menu"
+                                data-accordion="false">
+                                <li class="nav-item has-treeview menu-open">
+                                    <a href="javascript:void(0)" class="nav-link" aria-expanded="true">
+                                        <i class="nav-icon fas fa-layer-group"></i>
+                                        <p>ƏSAS MENYU<i class="right fas fa-angle-left"></i></p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="#" onclick="switchTab('devices-section')" class="nav-link active"
+                                                data-target="devices-section">
+                                                <i class="nav-icon fas fa-th-large"></i>
+                                                <p>Panel</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="#" onclick="switchTab('bulk-section')" class="nav-link"
+                                                data-target="bulk-section">
+                                                <i class="nav-icon fas fa-paper-plane"></i>
+                                                <p>Toplu Mesaj</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="#" onclick="switchTab('templates-section')" class="nav-link"
+                                                data-target="templates-section">
+                                                <i class="nav-icon far fa-file-alt"></i>
+                                                <p>Mesaj Şablonları</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="#" onclick="switchTab('statistics-section')" class="nav-link"
+                                                data-target="statistics-section">
+                                                <i class="nav-icon fas fa-chart-pie"></i>
+                                                <p>Statistikalar</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li class="nav-item has-treeview">
+                                    <a href="javascript:void(0)" class="nav-link" aria-expanded="false">
+                                        <i class="nav-icon fas fa-user-cog"></i>
+                                        <p>ADMİNİSTRASİYA<i class="right fas fa-angle-left"></i></p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item admin-only">
+                                            <a href="#" onclick="switchTab('dealers-section')" class="nav-link"
+                                                data-target="dealers-section">
+                                                <i class="nav-icon fas fa-user-shield"></i>
+                                                <p>Dilerlərin İdarə Edilməsi</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item admin-only">
+                                            <a href="#" onclick="switchTab('mobile-announcements-section')"
+                                                class="nav-link" data-target="mobile-announcements-section">
+                                                <i class="nav-icon fas fa-bullhorn"></i>
+                                                <p>Mobil Elanlar</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item admin-only">
+                                            <a href="#" onclick="switchTab('legal-agreements-section')" class="nav-link"
+                                                data-target="legal-agreements-section">
+                                                <i class="nav-icon fas fa-gavel"></i>
+                                                <p>Müqavilələr</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item admin-only">
+                                            <a href="#" onclick="switchTab('backups-section')" class="nav-link"
+                                                data-target="backups-section">
+                                                <i class="nav-icon fas fa-hdd"></i>
+                                                <p>Yedəkləmə</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item admin-only">
+                                            <a href="#" onclick="switchTab('system-monitor-section')" class="nav-link"
+                                                data-target="system-monitor-section">
+                                                <i class="nav-icon fas fa-heartbeat"></i>
+                                                <p>Sistem Monitor</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="#" onclick="switchTab('lookup-section')" class="nav-link"
+                                                data-target="lookup-section">
+                                                <i class="nav-icon fas fa-id-card"></i>
+                                                <p>Nömrə Rehberi</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li class="nav-item has-treeview">
+                                    <a href="javascript:void(0)" class="nav-link" aria-expanded="false">
+                                        <i class="nav-icon fas fa-user-circle"></i>
+                                        <p>HESAB<i class="right fas fa-angle-left"></i></p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="#" onclick="switchTab('security-section')" class="nav-link"
+                                                data-target="security-section">
+                                                <i class="nav-icon fas fa-shield-alt"></i>
+                                                <p>Təhlükəsizlik</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
+
+                        <!-- System Status Card -->
+                        <div class="sidebar-update-card"
+                            style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2);">
+                            <div class="update-card-title"
+                                style="color: var(--green); display: flex; align-items: center; gap: 6px;">
+                                <div
+                                    style="width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green);">
+                                </div>
+                                Sistem Aktivdir
+                            </div>
+                            <div class="update-card-text">Bütün xidmətlər normal işləyir. API bağlantısı sabitdir.</div>
+                            <a href="#" onclick="switchTab('statistics-section')" class="update-card-action"
+                                style="color: var(--text);">Statusu yoxla <i class="fas fa-arrow-right ml-1"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Profile Footer -->
+                    <div class="sidebar-footer">
+                        <img src="https://ui-avatars.com/api/?name=Admin&background=000&color=fff&rounded=true"
+                            class="footer-avatar" id="sidebar-user-avatar">
+                        <div class="footer-info">
+                            <span class="footer-name" id="sidebar-user-name">Yüklənir...</span>
+                            <span class="footer-email" id="sidebar-user-email">...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Backup Detail Modal -->
+        <div class="modal fade" id="backupDetailModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-box-open mr-2"></i> Yədək Məzmunu</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Details populated by JS -->
+                        <div id="backup-tree-view" style="max-height: 400px; overflow-y: auto;">
+                            <p class="text-muted text-center">Yüklənir...</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-danger" id="btn-delete-backup-modal"><i
+                                class="fas fa-trash"></i> Sil</button>
+                        <div>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Bağla</button>
+                            <button type="button" class="btn btn-primary" id="btn-restore-backup-modal"><i
+                                    class="fas fa-history"></i> Bu Yədəyi Bərpa Et</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Welcome Modal -->
+    <div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-0" style="border-radius: 8px;">
+                <div class="modal-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-gift text-warning fa-4x"></i>
+                    </div>
+                    <h3 class="font-weight-bold mb-3" id="welcome-title">Xoş Gəldiniz!</h3>
+                    <div id="welcome-message" class="text-muted mb-4 lead" style="line-height: 1.6;">
+                        <!-- Content will be injected by JS -->
+                    </div>
+                    <button type="button" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm"
+                        data-dismiss="modal">
+                        Təşəkkürlər!
+                    </button>
+                    <div class="mt-4">
+                        <small class="text-muted font-italic">OCTOTECH | Etibarlı texnologiya, ölçülə bilən
+                            nəticə</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0" id="section-title" data-i18n="dashboard.title">Cihaz İdarəetməsi</h1>
+                    </div>
+                    <div class="col-sm-6 text-right" id="section-actions">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+
+                <!-- Section: Security (was Account Settings) -->
+                <div id="security-section" class="tab-pane">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card card-outline card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-user-shield mr-2"></i> Hesab Təhlükəsizliyi
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <form id="profile-form">
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label">İstifadəçi adı</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" id="profile-username" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label">API açarı</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="profile-apikey"
+                                                        readonly>
+                                                    <div class="input-group-append">
+                                                        <button type="button" class="btn btn-default"
+                                                            onclick="copyToClipboard(document.getElementById('profile-apikey').value)">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Telefon nömrəsi</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" id="profile-phone"
+                                                    name="phoneNumber" placeholder="905xxxxxxxxx">
+                                                <small class="form-text text-muted">2FA və bildirişlər üçün istifadə
+                                                    olunur.
+                                                    Eklədikdə giriş üçün OTP tələb olunacaq.</small>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-9 offset-sm-3">
+                                                <button type="submit" class="btn btn-primary">Yadda saxla</button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <hr>
+
+                                    <h5 class="mb-3"><i class="fas fa-laptop-house mr-2"></i> Etibarlı Cihazlar</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Cihaz / Brauzer</th>
+                                                    <th>IP ünvanı</th>
+                                                    <th>Son aktivlik</th>
+                                                    <th style="width: 50px">Əməliyyat</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="trusted-devices-body">
+                                                <!-- Populated via JS -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Alert Container -->
+                <div id="alert-container"></div>
+
+                <!-- Section: Devices -->
+                <div id="devices-section" class="tab-pane active">
+                    <div class="row mb-4">
+                        <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+                            <div class="card h-100 shadow-sm border-0 device-kpi-card">
+                                <div class="card-body p-3 d-flex align-items-center">
+                                    <div class="mr-3 device-kpi-icon">
+                                        <i class="fas fa-link"></i>
+                                    </div>
+                                    <div>
+                                        <div class="device-kpi-label" data-i18n="dashboard.active_connections">Aktiv
+                                            Bağlantılar</div>
+                                        <div class="device-kpi-value" id="device-active-count">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+                            <div class="card h-100 shadow-sm border-0 device-kpi-card">
+                                <div class="card-body p-3 d-flex align-items-center">
+                                    <div class="mr-3 device-kpi-icon">
+                                        <i class="fas fa-desktop"></i>
+                                    </div>
+                                    <div>
+                                        <div class="device-kpi-label" data-i18n="dashboard.pending_messages">Cəmi
+                                            Sessiya
+                                        </div>
+                                        <div class="device-kpi-value" id="device-session-count">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+                            <div class="card h-100 shadow-sm border-0 device-kpi-card">
+                                <div class="card-body p-3 d-flex align-items-center">
+                                    <div class="mr-3 device-kpi-icon">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                    </div>
+                                    <div>
+                                        <div class="device-kpi-label" data-i18n="dashboard.device_limit">Cihaz Limiti
+                                        </div>
+                                        <div class="device-kpi-value" id="device-limit-label">∞</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card h-100 shadow-sm border-0 device-kpi-card">
+                                <div class="card-body p-3 d-flex align-items-center">
+                                    <div class="mr-3 device-kpi-icon">
+                                        <i class="fas fa-globe"></i>
+                                    </div>
+                                    <div>
+                                        <div class="device-kpi-label" data-i18n="dashboard.geo_regions">Fərqli Bölgələr
+                                        </div>
+                                        <div class="device-kpi-value" id="device-geo-count">1</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm border-0 device-table-card">
+                        <div class="card-header device-table-header">
+                            <h3 class="card-title" data-i18n="dashboard.device_status">Bağlı WhatsApp Cihazları</h3>
+                            <div class="device-table-search-wrap">
+                                <i class="fas fa-search" aria-hidden="true"></i>
+                                <input type="search" id="connected-device-search"
+                                    placeholder="Axtar: cihaz adı və ya nömrə" aria-label="Cihaz axtarışı">
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table id="connected-device-table"
+                                    class="table table-hover table-valign-middle mb-0 device-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-id">ID</th>
+                                            <th>Cihaz məlumatı</th>
+                                            <th>Ölkə</th>
+                                            <th>Platform</th>
+                                            <th>Sahibi</th>
+                                            <th>Qoşulma vaxtı</th>
+                                            <th>Status</th>
+                                            <th class="col-action">Əməliyyat</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="connected-device-table-body">
+                                        <!-- JS content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="device-table-pagination">
+                                <button type="button" class="btn btn-secondary btn-sm" id="device-table-prev">
+                                    Əvvəlki
+                                </button>
+                                <span class="device-table-page-info" id="device-table-page-info">1 / 1</span>
+                                <button type="button" class="btn btn-secondary btn-sm" id="device-table-next">
+                                    Növbəti
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Add Device -->
+                <div id="add-device-section" class="tab-pane">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card shadow-sm border-0" style="border-radius: 12px;">
+                                <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                                    <h3 class="card-title font-weight-bold" style="font-size: 1.1rem;"
+                                        data-i18n="add_device.title">Yeni
+                                        Bağlantı Qur</h3>
+                                </div>
+                                <div class="card-body mt-2">
+                                    <p class="text-muted small" data-i18n="add_device.description">WhatsApp
+                                        hesabınızı bağlamaq üçün əvvəlcə bir sessiya başladın, sonra göstərilən QR kodu
+                                        skan edin.</p>
+
+                                    <div class="form-group admin-only">
+                                        <label class="text-xs font-weight-bold text-muted text-uppercase mb-2 d-block"
+                                            data-i18n="add_device.owner">Hesab Sahibi</label>
+                                        <select id="client-owner-select" class="form-control form-control-sm"></select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="text-xs font-weight-bold text-muted text-uppercase mb-2 d-block"
+                                            data-i18n="add_device.label">Cihaz Etiketi / Adı</label>
+                                        <input type="text" id="pairing-label-input" class="form-control"
+                                            data-i18n="add_device.label_placeholder" placeholder="Məs: Satış Şöbəsi">
+                                    </div>
+
+                                    <button id="client-create-btn" class="btn btn-success btn-block shadow-sm">
+                                        <i class="fas fa-play mr-2"></i> <span
+                                            data-i18n="add_device.start_session">Sessiyanı başladın</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="alert shadow-sm border-0 mt-3"
+                                style="background: rgba(59, 130, 246, 0.08); border-left: 4px solid var(--blue) !important; border-radius: 8px;">
+                                <h6 class="font-weight-bold" style="color: var(--blue);"><i
+                                        class="fas fa-info-circle mr-2"></i> <span data-i18n="add_device.how_to">Necə
+                                        qoşulur?</span></h6>
+                                <ol class="pl-3 mb-0 text-sm" style="color: var(--text);">
+                                    <li class="mb-1" data-i18n="add_device.step1">Cihaz adını yazın və <strong>Sessiyanı
+                                            başladın</strong> düyməsinə
+                                        klikləyin.</li>
+                                    <li class="mb-1" data-i18n="add_device.step2">Sağ tərəfdə QR kod görünəcək.</li>
+                                    <li class="mb-1" data-i18n="add_device.step3">Telefonunuzda WhatsApp-ı açın.</li>
+                                    <li class="mb-1" data-i18n="add_device.step4"><strong>Bağlı Cihazlar -> Cihaz
+                                            Bağla</strong> yolunu izləyin.
+                                    </li>
+                                    <li data-i18n="add_device.step5">Ekranda görünən kodu skan edin.</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div id="wa-client-list" class="row">
+                                <!-- QR Cards and Session Status will appear here -->
+                                <div class="col-12 text-center py-5 mt-5">
+                                    <div
+                                        style="width: 80px; height: 80px; background: var(--surface-2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; margin-bottom: 20px;">
+                                        <i class="fas fa-qrcode text-muted fa-2x"></i>
+                                    </div>
+                                    <h5 class="font-weight-bold" style="color: var(--text);">Bağlantı Gözlənilir</h5>
+                                    <p class="text-muted" data-i18n="add_device.qr_waiting">Bağlantı kodlarını
+                                        görmək üçün soldan yeni bir sessiya başladın.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Bulk Message -->
+                <div id="bulk-section" class="tab-pane">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="card">
+                                <div class="card-header" style="padding: 12px 16px;">
+                                    <span class="font-weight-bold" style="font-size: 15px;" data-i18n="bulk.title">Mesaj
+                                        Göndər</span>
+                                </div>
+                                <form action="/admin/message" method="post">
+                                    <div class="card-body" style="padding: 12px 16px;">
+                                        <div class="form-group mb-3">
+                                            <label class="small text-muted mb-1"
+                                                data-i18n="bulk.recipients">Nömrələr</label>
+                                            <textarea name="recipients" rows="5" class="form-control form-control-sm"
+                                                data-i18n="bulk.recipients_placeholder"
+                                                placeholder="+994...&#10;+994..." required
+                                                style="border-radius: 6px; font-size: 13px;"></textarea>
+                                            <small class="form-text text-muted" data-i18n="bulk.recipients_help"
+                                                style="font-size: 11px;">Hər sətrə bir nömrə yazın.</small>
+                                            <div id="admin-bulk-shortcuts" class="mt-2 d-none">
+                                                <button type="button" id="load-2fa-users-btn"
+                                                    class="btn btn-xs btn-outline-info"
+                                                    style="font-size: 11px; border-radius: 4px;">
+                                                    <i class="fas fa-users mr-1"></i> Bütün 2FA İstifadəçiləri
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label class="small text-muted mb-1" data-i18n="bulk.select_template">Şablon
+                                                Seç (İstəyə bağlı)</label>
+                                            <select id="bulk-template-select" class="form-control form-control-sm"
+                                                style="border-radius: 6px; font-size: 13px;">
+                                                <option value="">-- Seçin --</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-0">
+                                            <label class="small text-muted mb-1" data-i18n="bulk.message">Mesaj</label>
+                                            <textarea id="bulk-message-area" name="message" rows="4"
+                                                class="form-control form-control-sm"
+                                                data-i18n="bulk.message_placeholder" placeholder="Mesajınız..." required
+                                                style="border-radius: 6px; font-size: 13px;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer" style="padding: 10px 16px;">
+                                        <button type="submit" class="btn btn-primary btn-sm btn-block"
+                                            data-i18n="bulk.send"
+                                            style="border-radius: 6px; font-size: 13px;">Göndər</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center"
+                                    style="padding: 12px 16px;">
+                                    <span class="font-weight-bold" style="font-size: 15px;"
+                                        data-i18n="bulk.queue_status">Növbə / Son Mesajlar</span>
+                                    <input type="text" id="queue-search-input"
+                                        class="form-control form-control-sm ml-auto" placeholder="Axtar..."
+                                        style="max-width: 150px; border-radius: 6px; font-size: 12px;">
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table id="message-status-table" class="table table-logs mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th data-i18n="bulk.recipient">ALICI</th>
+                                                    <th data-i18n="bulk.device">CİHAZ</th>
+                                                    <th data-i18n="bulk.sender">GÖNDƏRƏN</th>
+                                                    <th data-i18n="bulk.message_col">MESAJ</th>
+                                                    <th data-i18n="bulk.status">STATUS</th>
+                                                    <th data-i18n="bulk.time">TARİX</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- JS content -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Statistics -->
+                <div id="statistics-section" class="tab-pane">
+                    <div class="row">
+                        <div class="col-lg-3 col-6">
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3 id="stat-sessions">0</h3>
+                                    <p data-i18n="sidebar.device_list">Aktiv Cihazlar</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-link"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-6">
+                            <div class="small-box bg-warning">
+                                <div class="inner">
+                                    <h3 id="stat-pending">0</h3>
+                                    <p data-i18n="dashboard.pending_messages">Gözləyən Mesaj</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-6">
+                            <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3 id="stat-delivered">0</h3>
+                                    <p data-i18n="dashboard.delivered">Çatdırılan Mesaj</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-6">
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3 id="stat-failed">0</h3>
+                                    <p data-i18n="dashboard.failed">Xətalı Mesaj</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-times"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box stat-box-neutral stat-box-primary">
+                                <div class="inner">
+                                    <h3 id="stat-success-rate-24h">0%</h3>
+                                    <p>Son 24 saat uğur faizi</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-6">
+                            <div class="small-box stat-box-neutral stat-box-maroon">
+                                <div class="inner">
+                                    <h3 id="stat-blocked-24h">0</h3>
+                                    <p>Son 24 saat blok sayı</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-ban"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-12">
+                            <div class="small-box stat-box-neutral stat-box-secondary">
+                                <div class="inner">
+                                    <h3 id="stat-risky-devices">0</h3>
+                                    <p>Riskli Cihazlar</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" style="padding: 12px 16px;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="font-weight-bold" style="font-size: 15px;">Riskli Cihazlar</span>
+                                <small class="text-muted" id="risk-device-summary" style="font-size: 11px;">0
+                                    qeyd</small>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-logs mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Cihaz</th>
+                                            <th>Hesab</th>
+                                            <th>Ölkə</th>
+                                            <th>Status</th>
+                                            <th>Xəta faizi</th>
+                                            <th>Son xəta</th>
+                                            <th>Əməliyyat</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="risk-device-table-body">
+                                        <tr>
+                                            <td colspan="7" class="text-center py-3 text-muted">Yüklənir...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Message Logs -->
+                <div id="system-monitor-section" class="tab-pane admin-only">
+                    <div class="card">
+                        <div class="card-header" style="padding: 12px 16px;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="d-flex align-items-center" style="gap: 10px;">
+                                    <span class="font-weight-bold" style="font-size: 15px;">Sistem Monitor</span>
+                                    <small id="system-monitor-last-updated" class="text-muted"
+                                        style="font-size: 11px;">Yüklənir...</small>
+                                </div>
+                                <div class="d-flex align-items-center" style="gap: 6px;">
+                                    <button id="system-monitor-refresh-btn" type="button"
+                                        class="btn btn-sm btn-outline-secondary"
+                                        style="border-radius: 6px; padding: 4px 10px; font-size: 12px;">
+                                        <i class="fas fa-sync-alt mr-1"></i>Yenilə
+                                    </button>
+                                    <label class="mb-0 d-flex align-items-center text-muted" style="font-size: 12px;">
+                                        <input id="system-monitor-auto-refresh" type="checkbox" class="mr-1" checked>
+                                        Canlı
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body" style="padding: 12px 16px;">
+                            <div class="row">
+                                <div class="col-lg-2 col-md-4 col-6 mb-2">
+                                    <div class="sm-kpi-card">
+                                        <div class="sm-kpi-label">Queue Yükü</div>
+                                        <div class="sm-kpi-value" id="sm-queue-load">0%</div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-4 col-6 mb-2">
+                                    <div class="sm-kpi-card">
+                                        <div class="sm-kpi-label">Aktiv Cihaz</div>
+                                        <div class="sm-kpi-value" id="sm-ready-devices">0</div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-4 col-6 mb-2">
+                                    <div class="sm-kpi-card">
+                                        <div class="sm-kpi-label">Suspend Cihaz</div>
+                                        <div class="sm-kpi-value" id="sm-suspended-devices">0</div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-4 col-6 mb-2">
+                                    <div class="sm-kpi-card">
+                                        <div class="sm-kpi-label">İlişən Göndəriş</div>
+                                        <div class="sm-kpi-value" id="sm-stuck-count">0</div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-4 col-6 mb-2">
+                                    <div class="sm-kpi-card">
+                                        <div class="sm-kpi-label">Deferred</div>
+                                        <div class="sm-kpi-value" id="sm-deferred-count">0</div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-4 col-6 mb-2">
+                                    <div class="sm-kpi-card">
+                                        <div class="sm-kpi-label">Lock / Rest</div>
+                                        <div class="sm-kpi-value"><span id="sm-locked-devices">0</span>/<span
+                                                id="sm-resting-devices">0</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive mb-3">
+                                <table class="table table-logs mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Loop</th>
+                                            <th>Status</th>
+                                            <th>İnterval</th>
+                                            <th>Son İşləmə</th>
+                                            <th>Gecikmə</th>
+                                            <th>Duration</th>
+                                            <th>Overlap</th>
+                                            <th>Xəta</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="system-monitor-loop-body">
+                                        <tr>
+                                            <td colspan="8" class="text-center py-3 text-muted">Yüklənir...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-logs mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Marka / Etiket</th>
+                                                    <th>Növbə</th>
+                                                    <th>Deferred</th>
+                                                    <th>Hesab</th>
+                                                    <th>Ən Köhnə</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="system-monitor-label-queue-body">
+                                                <tr>
+                                                    <td colspan="5" class="text-center py-3 text-muted">Yüklənir...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-logs mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>İlişən Mesajlar</th>
+                                                    <th>Hesab</th>
+                                                    <th>Yaş</th>
+                                                    <th>Cəhd</th>
+                                                    <th>Cihaz</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="system-monitor-stuck-body">
+                                                <tr>
+                                                    <td colspan="5" class="text-center py-3 text-muted">Yüklənir...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-logs mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Bloklanan Nömrə</th>
+                                                    <th>Hesab</th>
+                                                    <th>Sayı</th>
+                                                    <th>Son Blok</th>
+                                                    <th>Xəta</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="system-monitor-blocked-body">
+                                                <tr>
+                                                    <td colspan="5" class="text-center py-3 text-muted">Yüklənir...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-logs mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Hesab</th>
+                                                    <th>Pause</th>
+                                                    <th>Fail Rate</th>
+                                                    <th>Saatlıq</th>
+                                                    <th>Günlük</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="system-monitor-owner-body">
+                                                <tr>
+                                                    <td colspan="5" class="text-center py-3 text-muted">Yüklənir...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="lookup-section" class="tab-pane">
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <div class="card">
+                                <div class="card-header" style="padding:12px 16px;">
+                                    <span class="font-weight-bold" style="font-size:15px;">WhatsApp Lookup</span>
+                                </div>
+                                <div class="card-body" style="padding:12px 16px;">
+                                    <form id="lookup-form">
+                                        <div class="form-group mb-2">
+                                            <label class="small text-muted mb-1">User (owner)</label>
+                                            <select id="lookup-owner" class="form-control form-control-sm">
+                                                <option value="">Avtomatik seçim</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-2">
+                                            <label class="small text-muted mb-1">Nömrələr</label>
+                                            <textarea id="lookup-numbers" rows="8" class="form-control form-control-sm"
+                                                placeholder="+994...&#10;+90..."></textarea>
+                                        </div>
+                                        <button type="submit" id="lookup-submit-btn"
+                                            class="btn btn-primary btn-sm btn-block">Yoxla</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center"
+                                    style="padding:12px 16px;">
+                                    <span class="font-weight-bold" style="font-size:15px;">Lookup Nəticələri</span>
+                                    <small id="lookup-results-summary" class="text-muted" style="font-size:11px;">0
+                                        qeyd</small>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-logs mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nömrə</th>
+                                                    <th>Mövcuddur</th>
+                                                    <th>Ad</th>
+                                                    <th>Profil</th>
+                                                    <th>Status</th>
+                                                    <th>Təxmini yaranma</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="lookup-results-body">
+                                                <tr>
+                                                    <td colspan="6" class="text-center py-3 text-muted">Hələ lookup
+                                                        edilməyib.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center"
+                                    style="padding:12px 16px;">
+                                    <div class="d-flex align-items-center" style="gap:8px;">
+                                        <span class="font-weight-bold" style="font-size:15px;">Kayıtlı Nömrə
+                                            Rehberi</span>
+                                        <small id="recipient-registry-summary" class="text-muted"
+                                            style="font-size:11px;">0 qeyd</small>
+                                    </div>
+                                    <div class="d-flex align-items-center" style="gap:6px;">
+                                        <input id="recipient-registry-search" type="text"
+                                            class="form-control form-control-sm" placeholder="Axtar..."
+                                            style="max-width:180px;">
+                                        <button id="recipient-registry-refresh-btn" type="button"
+                                            class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-logs mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Owner</th>
+                                                    <th>Nömrə</th>
+                                                    <th>Ad</th>
+                                                    <th>Mövcudluq</th>
+                                                    <th>Mesaj</th>
+                                                    <th>Son Göndəriş</th>
+                                                    <th>Profil</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="recipient-registry-body">
+                                                <tr>
+                                                    <td colspan="8" class="text-center py-3 text-muted">Yüklənir...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="message-logs-section" class="tab-pane">
+                    <div class="card">
+                        <div class="card-header" style="padding: 12px 16px;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="d-flex align-items-center" style="gap: 10px;">
+                                    <span class="font-weight-bold" style="font-size: 15px;">Mesaj Jurnalları</span>
+                                    <small id="message-log-summary" class="text-muted" style="font-size: 11px;"></small>
+                                </div>
+                                <div class="d-flex align-items-center" style="gap: 6px;">
+                                    <button id="message-log-refresh-btn" type="button"
+                                        class="btn btn-sm btn-outline-secondary"
+                                        style="border-radius: 6px; padding: 4px 10px; font-size: 12px;">
+                                        <i class="fas fa-sync-alt mr-1"></i>Yenilə
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                        style="border-radius: 6px; padding: 4px 10px; font-size: 12px;"
+                                        data-toggle="collapse" data-target="#log-filters-collapse">
+                                        <i class="fas fa-sliders-h mr-1"></i>Filtr
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Inline search -->
+                            <form id="message-log-filter-form">
+                                <input id="message-log-search" type="text" class="form-control form-control-sm"
+                                    placeholder="Nömrə, mesaj və ya istinad axtar..."
+                                    style="border-radius: 6px; font-size: 13px; background: var(--surface-2); border-color: var(--border);">
+                            </form>
+                        </div>
+
+                        <!-- Collapsible advanced filters -->
+                        <div class="collapse" id="log-filters-collapse">
+                            <div style="padding: 12px 16px; border-top: 1px solid var(--border);">
+                                <div class="row">
+                                    <div class="col-6 col-md-3 mb-2">
+                                        <label class="mb-1 small text-muted">Status</label>
+                                        <select id="message-log-statuses" class="form-control form-control-sm" multiple
+                                            size="3"></select>
+                                    </div>
+                                    <div class="col-6 col-md-3 mb-2">
+                                        <label class="mb-1 small text-muted">Cihaz</label>
+                                        <select id="message-log-devices" class="form-control form-control-sm" multiple
+                                            size="3"></select>
+                                    </div>
+                                    <div class="col-6 col-md-3 mb-2">
+                                        <label class="mb-1 small text-muted">Nod</label>
+                                        <select id="message-log-nodes" class="form-control form-control-sm" multiple
+                                            size="3"></select>
+                                    </div>
+                                    <div class="col-6 col-md-3 mb-2 admin-only">
+                                        <label class="mb-1 small text-muted">Hesab</label>
+                                        <select id="message-log-owners" class="form-control form-control-sm" multiple
+                                            size="3"></select>
+                                    </div>
+                                    <div class="col-6 col-md-3 mb-2">
+                                        <label class="mb-1 small text-muted">Limit</label>
+                                        <input id="message-log-limit" type="number" min="50" max="5000" step="50"
+                                            value="500" class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-6 col-md-3 mb-2">
+                                        <label class="mb-1 small text-muted">Başlanğıc</label>
+                                        <input id="message-log-from" type="date" class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-6 col-md-3 mb-2">
+                                        <label class="mb-1 small text-muted">Bitiş</label>
+                                        <input id="message-log-to" type="date" class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-12 col-md-6 mb-2 d-flex align-items-end" style="gap: 6px;">
+                                        <button type="submit" form="message-log-filter-form"
+                                            class="btn btn-sm btn-primary" style="border-radius: 6px; font-size: 12px;">
+                                            <i class="fas fa-search mr-1"></i>Tətbiq et
+                                        </button>
+                                        <button id="message-log-reset-btn" type="button"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            style="border-radius: 6px; font-size: 12px;">
+                                            Sıfırla
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="p-3" style="border-bottom: 1px solid var(--border);">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="font-weight-bold" style="font-size: 14px;">Bloklanan Nömrələr</span>
+                                    <small id="blocked-numbers-summary" class="text-muted" style="font-size: 11px;">0
+                                        qeyd</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-logs mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Nömrə</th>
+                                                <th>Hesab</th>
+                                                <th>Blok sayı</th>
+                                                <th>Son blok</th>
+                                                <th>Detay</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="blocked-numbers-table-body">
+                                            <tr>
+                                                <td colspan="5" class="text-center py-3 text-muted">Yüklənir...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-logs mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Vaxt</th>
+                                            <th>Status</th>
+                                            <th>Nod</th>
+                                            <th>Göndərən → Alıcı</th>
+                                            <th>Mesaj</th>
+                                            <th>Detay</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="message-logs-table-body">
+                                        <tr>
+                                            <td colspan="6" class="text-center py-4 text-muted">Yüklənir...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Templates -->
+                <div id="templates-section" class="tab-pane">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title" data-i18n="templates.add_new">Yeni Şablon Əlavə Et</h3>
+                                </div>
+                                <form id="template-form">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label data-i18n="templates.name">Şablon Adı</label>
+                                            <input type="text" id="template-title" class="form-control"
+                                                placeholder="Məs: Xoş gəldiniz" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label data-i18n="templates.content">Mesaj Məzmunu</label>
+                                            <textarea id="template-content" rows="6" class="form-control"
+                                                placeholder="Buraya mesajınızı daxil edin..." required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-primary btn-block"
+                                            data-i18n="templates.btn_add">Əlavə Et</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title" data-i18n="templates.saved_templates">Yadda Saxlanılan
+                                        Şablonlar</h3>
+                                </div>
+                                <div class="card-body p-0">
+                                    <table class="table table-striped table-valign-middle">
+                                        <thead>
+                                            <tr>
+                                                <th data-i18n="templates.name">Şablon Adı</th>
+                                                <th class="text-right">Əməliyyat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="template-table-body">
+                                            <tr>
+                                                <td colspan="2" class="text-center p-4"
+                                                    data-i18n="templates.no_templates">Hələ heç bir şablonunuz
+                                                    yoxdur.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Section: Dealers (Admin) -->
+                <div id="dealers-section" class="tab-pane admin-only">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card card-olive">
+                                <div class="card-header">
+                                    <h3 class="card-title">Yeni Diler Əlavə Et</h3>
+                                </div>
+                                <form id="dealer-form">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <input type="text" name="username" class="form-control"
+                                                placeholder="Diler adı" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" name="password" class="form-control"
+                                                placeholder="Şifrə (boş=avtomatik)">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" name="deviceLimit" class="form-control"
+                                                placeholder="Cihaz Limiti">
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-olive btn-block">Diler yarat</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-body p-0">
+                                    <table class="table table-striped table-valign-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>Diler</th>
+                                                <th>Cihaz</th>
+                                                <th>Limit</th>
+                                                <th class="text-right">Əməliyyat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dealer-table-body"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Activation (Admin) -->
+                <div id="activation-section" class="tab-pane admin-only">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <div class="card card-outline card-primary shadow">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-key mr-2"></i> Sürətli Aktivasiya</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small">Yeni bir istifadəçi üçün anında API açarı
+                                        yaradın. İstifadəçi artıq varsa mövcud açarı qaytarar.</p>
+                                    <form id="activation-form">
+                                        <div class="form-group">
+                                            <label>İstifadəçi adı</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                </div>
+                                                <input type="text" name="username" class="form-control"
+                                                    placeholder="İstifadəçi adını daxil edin..." required>
+                                            </div>
+                                        </div>
+                                        <div id="activation-result"
+                                            class="alert alert-light border font-italic text-sm d-none animate__animated animate__fadeIn">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-block shadow-sm mt-3">
+                                            <i class="fas fa-magic mr-2"></i> API açarı yarat
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Login & Activity Logs (Admin) -->
+                <div id="login-logs-section" class="tab-pane admin-only">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-outline card-info shadow-sm mb-4">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-sign-in-alt mr-2"></i> Son giriş
+                                        cəhdləri</h3>
+                                    <div class="card-tools">
+                                        <button onclick="fetchLoginLogs()" class="btn btn-tool text-primary"><i
+                                                class="fas fa-sync"></i> Yenilə</button>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-sm text-sm mb-0">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th>Vaxt</th>
+                                                    <th>Status</th>
+                                                    <th>İstifadəçi</th>
+                                                    <th>IP / Məkan</th>
+                                                    <th>Cihaz</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="login-logs-table-body"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-white py-2" id="login-logs-pagination"
+                                    style="border-top: 1px solid var(--border);"></div>
+                            </div>
+
+                            <div class="card card-outline card-success shadow-sm mb-4">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-users-cog mr-2 text-success"></i> Aktiv
+                                        Veb sessiyaları</h3>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-sm text-sm mb-0">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th>İstifadəçi</th>
+                                                    <th>IP ünvanı</th>
+                                                    <th>Cihaz</th>
+                                                    <th>Son görülmə</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="active-sessions-table-body"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card card-outline card-warning shadow-sm">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-bolt mr-2 text-warning"></i> Hesab və
+                                        istifadə aktivlikləri</h3>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-sm text-sm mb-0">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th style="width: 140px;">Vaxt</th>
+                                                    <th>Növ</th>
+                                                    <th>Diler</th>
+                                                    <th>Detay</th>
+                                                    <th>Meta</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="activity-logs-table-body"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-white py-2" id="activity-logs-pagination"
+                                    style="border-top: 1px solid var(--border);"></div>
+                            </div>
+
+                            <div class="card card-outline card-dark shadow-sm mt-4">
+                                <div class="card-header">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h3 class="card-title"><i class="fas fa-stream mr-2"></i> Tam ətraflı jurnallar
+                                        </h3>
+                                        <button id="detailed-logs-refresh-btn" type="button"
+                                            class="btn btn-tool text-primary">
+                                            <i class="fas fa-sync"></i> Yenilə
+                                        </button>
+                                    </div>
+                                    <div class="mt-2">
+                                        <form id="detailed-logs-filter-form" class="row">
+                                            <div class="col-md-3 mb-2">
+                                                <input id="detailed-log-search" type="text"
+                                                    class="form-control form-control-sm"
+                                                    placeholder="Axtar: nömrə, xəta, sahib, növ...">
+                                            </div>
+                                            <div class="col-md-2 mb-2">
+                                                <select id="detailed-log-sources" class="form-control form-control-sm"
+                                                    multiple size="2"></select>
+                                            </div>
+                                            <div class="col-md-2 mb-2">
+                                                <select id="detailed-log-levels" class="form-control form-control-sm"
+                                                    multiple size="2"></select>
+                                            </div>
+                                            <div class="col-md-2 mb-2">
+                                                <select id="detailed-log-owners" class="form-control form-control-sm"
+                                                    multiple size="2"></select>
+                                            </div>
+                                            <div class="col-md-1 mb-2">
+                                                <input id="detailed-log-from" type="date"
+                                                    class="form-control form-control-sm">
+                                            </div>
+                                            <div class="col-md-1 mb-2">
+                                                <input id="detailed-log-to" type="date"
+                                                    class="form-control form-control-sm">
+                                            </div>
+                                            <div class="col-md-1 mb-2">
+                                                <input id="detailed-log-limit" type="number" min="100" max="10000"
+                                                    step="100" value="1000" class="form-control form-control-sm">
+                                            </div>
+                                            <div class="col-12 mb-1 d-flex align-items-center" style="gap:6px;">
+                                                <button type="submit" class="btn btn-sm btn-primary">Tətbiq et</button>
+                                                <button id="detailed-logs-reset-btn" type="button"
+                                                    class="btn btn-sm btn-outline-secondary">Sıfırla</button>
+                                                <div class="form-check form-check-inline ml-2">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        id="detailed-log-critical-only">
+                                                    <label class="form-check-label small"
+                                                        for="detailed-log-critical-only">Yalnız kritik</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        id="detailed-log-auto-refresh">
+                                                    <label class="form-check-label small"
+                                                        for="detailed-log-auto-refresh">Canlı (5 san.)</label>
+                                                </div>
+                                                <button id="detailed-log-export-json" type="button"
+                                                    class="btn btn-sm btn-outline-info">JSON</button>
+                                                <button id="detailed-log-export-csv" type="button"
+                                                    class="btn btn-sm btn-outline-info">CSV</button>
+                                                <small id="detailed-logs-summary" class="text-muted ml-2">0 qeyd</small>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-sm text-sm mb-0">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th style="width: 120px;">Vaxt</th>
+                                                    <th>Mənbə</th>
+                                                    <th>Səviyyə</th>
+                                                    <th>Sahib</th>
+                                                    <th>Növ</th>
+                                                    <th>Status</th>
+                                                    <th>Mesaj / Xəta</th>
+                                                    <th>Xam detal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="detailed-logs-table-body"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="legal-agreements-section" class="tab-pane admin-only">
+                    <div class="card">
+                        <div class="card-header" style="padding: 12px 16px;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="font-weight-bold" style="font-size: 15px;">İstifadə müqaviləsi
+                                        imzaları</span>
+                                    <small class="text-muted d-block" id="legal-agreements-summary"
+                                        style="font-size: 11px;">Yüklənir...</small>
+                                </div>
+                                <button id="legal-agreements-refresh-btn" type="button"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-sync-alt mr-1"></i> Yenilə
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-logs mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>İstifadəçi</th>
+                                            <th>Rol</th>
+                                            <th>Ad Soyad</th>
+                                            <th>Kimlik</th>
+                                            <th>İmza tarixi</th>
+                                            <th>IP</th>
+                                            <th class="text-right">PDF</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="legal-agreements-table-body">
+                                        <tr>
+                                            <td colspan="7" class="text-center py-3 text-muted">Yüklənir...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mobile-announcements-section" class="tab-pane admin-only">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header" style="padding: 12px 16px;">
+                                    <span class="font-weight-bold" style="font-size: 15px;">Toplu Mobil Bildiriş</span>
+                                </div>
+                                <form id="mobile-announcement-form">
+                                    <div class="card-body">
+                                        <div class="form-group mb-2">
+                                            <label class="mb-1 small text-muted">Hədəf</label>
+                                            <select id="mobile-announcement-owner" class="form-control form-control-sm">
+                                                <option value="all">Bütün mobil istifadəçilər</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-2">
+                                            <label class="mb-1 small text-muted">Növ</label>
+                                            <select id="mobile-announcement-type" class="form-control form-control-sm">
+                                                <option value="campaign">Kampaniya</option>
+                                                <option value="system">Sistem</option>
+                                                <option value="security">Təhlükəsizlik</option>
+                                                <option value="info">Məlumat</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-2">
+                                            <label class="mb-1 small text-muted">Başlıq</label>
+                                            <input id="mobile-announcement-title" type="text" maxlength="120"
+                                                class="form-control form-control-sm"
+                                                placeholder="Məs: Planlı xidmət bildirişi">
+                                        </div>
+                                        <div class="form-group mb-0">
+                                            <label class="mb-1 small text-muted">Mesaj</label>
+                                            <textarea id="mobile-announcement-body" rows="4" maxlength="1000"
+                                                class="form-control form-control-sm"
+                                                placeholder="İstifadəçilərə göndəriləcək bildiriş mətni"></textarea>
+                                        </div>
+                                        <small class="text-muted d-block mt-2" style="font-size: 11px;">
+                                            Göndərilən bildirişlər mobil tətbiqdəki “Bildiriş” bölməsində görünür.
+                                        </small>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button id="mobile-announcement-send-btn" type="submit"
+                                            class="btn btn-primary btn-block">
+                                            <i class="fas fa-paper-plane mr-1"></i> Bildirişi göndər
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header" style="padding: 12px 16px;">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="font-weight-bold" style="font-size: 15px;">Son göndərişlər</span>
+                                        <div class="d-flex align-items-center" style="gap: 8px;">
+                                            <small id="mobile-announcements-summary" class="text-muted"
+                                                style="font-size: 11px;">0 qeyd</small>
+                                            <button id="mobile-announcements-refresh-btn" type="button"
+                                                class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-sync-alt mr-1"></i> Yenilə
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-logs mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Vaxt</th>
+                                                    <th>Növ</th>
+                                                    <th>Hədəf</th>
+                                                    <th>Məzmun</th>
+                                                    <th>Yaradan</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="mobile-announcements-table-body">
+                                                <tr>
+                                                    <td colspan="5" class="text-center py-3 text-muted">Yüklənir...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Backups (Admin) -->
+                <div id="backups-section" class="tab-pane admin-only">
+                    <div class="card">
+                        <div class="card-header" style="padding: 12px 16px;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center" style="gap: 10px;">
+                                    <span class="font-weight-bold" style="font-size: 15px;">Sistem yədəkləri</span>
+                                    <small class="text-muted d-none d-md-block" style="font-size: 11px;">Avtomatik
+                                        yədəklər hər saat yaradılır</small>
+                                </div>
+                                <button id="btn-create-backup" class="btn btn-sm btn-primary" onclick="createBackup()"
+                                    style="border-radius: 6px; padding: 4px 10px; font-size: 12px;">
+                                    <i class="fas fa-plus-circle mr-1"></i> Yeni yədək
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-logs mb-0" id="backups-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tarix</th>
+                                            <th>Saat</th>
+                                            <th>Ölçü</th>
+                                            <th class="text-right">Əməliyyatlar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- JS content -->
+                                    </tbody>
+                                    <tfoot id="backups-loading" style="display:none;">
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-muted">Yüklənir...</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Documentation -->
+                <div id="docs-section" class="tab-pane">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-outline card-info">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-code mr-2"></i> HubMSG API V1</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card shadow-sm border-0">
+                                        <div class="card-header bg-gradient-info text-white py-3">
+                                            <h3 class="card-title font-weight-bold" data-i18n="docs.title">API
+                                                Sənədləri</h3>
+                                        </div>
+                                        <div class="card-body p-4">
+                                            <div class="alert alert-light border mb-4">
+                                                <h6 class="font-weight-bold">Baza URL:</h6>
+                                                <code class="text-primary api-base-url">http://localhost:2004</code>
+                                            </div>
+
+                                            <h6 class="font-weight-bold" data-i18n="docs.headers">Header
+                                                Parametrləri</h6>
+                                            <table class="table table-bordered table-sm text-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th data-i18n="docs.key_col">Açar</th>
+                                                        <th data-i18n="docs.val_col">Dəyər</th>
+                                                        <th data-i18n="docs.req_col">Mütləq</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Content-Type</td>
+                                                        <td>application/json</td>
+                                                        <td data-i18n="docs.yes">Bəli</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>x-api-key</td>
+                                                        <td><span
+                                                                class="user-api-key badge badge-warning">API_AÇARINIZ</span>
+                                                        </td>
+                                                        <td data-i18n="docs.yes">Bəli</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <h6 class="font-weight-bold mt-4" data-i18n="docs.body">Body
+                                                Parametrləri</h6>
+                                            <table class="table table-bordered table-sm text-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th data-i18n="docs.key_col">Açar</th>
+                                                        <th data-i18n="docs.tip_col">Növ</th>
+                                                        <th data-i18n="docs.desc_col">Açıqlama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>recipient</td>
+                                                        <td>string</td>
+                                                        <td data-i18n="docs.recipient_desc">Mesaj göndəriləcək nömrə
+                                                            (məs: 994XXXXXXXXX)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>message</td>
+                                                        <td>string</td>
+                                                        <td data-i18n="docs.message_desc">Göndəriləcək mesaj mətni
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <h6 class="font-weight-bold mt-4" data-i18n="docs.examples">Nümunəvi
+                                                İstifadə</h6>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <h6>cURL</h6>
+                                                    <div class="bg-dark p-3 rounded">
+                                                        <pre class="text-white mb-0" style="font-size: 0.85rem;"><code>curl -X POST <span class="api-base-url">http://localhost:2004</span>/api/message \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: <span class="user-api-key text-warning">API_AÇARINIZ</span>" \
+  -d '{
+    "recipient": "994551234567",
+    "message": "Salam! HubMSG API vasitəsilə göndərildi."
+  }'</code></pre>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <h6>Nod.js (axios)</h6>
+                                                    <div class="bg-dark p-3 rounded">
+                                                        <pre class="text-white mb-0" style="font-size: 0.85rem;"><code>const axios = require('axios');
+
+axios.post('<span class="api-base-url">http://localhost:2004</span>/api/message', {
+    recipient: '994551234567',
+    message: 'Salam! HubMSG API vasitəsilə göndərildi.'
+}, {
+    headers: {
+        'x-api-key': '<span class="user-api-key text-warning">API_AÇARINIZ</span>',
+        'Content-Type': 'application/json'
+    }
+}).then(res => console.log(res.data))
+  .catch(err => console.error(err));</code></pre>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <h6 class="font-weight-bold mt-4" data-i18n="docs.error_codes">Xəta
+                                                Kodları</h6>
+                                            <ul class="list-unstyled text-sm">
+                                                <li class="mb-1"><span class="badge badge-success">200</span> <span
+                                                        data-i18n="docs.success_200">Uğurlu, mesaj növbəyə əlavə
+                                                        edildi.</span></li>
+                                                <li class="mb-1"><span class="badge badge-danger">401</span> <span
+                                                        data-i18n="docs.error_401">Yanlış və ya çatışmayan API
+                                                        açarı.</span></li>
+                                                <li class="mb-1"><span class="badge badge-danger">400</span> <span
+                                                        data-i18n="docs.error_400">Çatışmayan parametr (alıcı və ya
+                                                        mesaj boşdur).</span></li>
+                                                <li class="mb-1"><span class="badge badge-danger">500</span> <span
+                                                        data-i18n="docs.error_500">Server xətası və ya aktiv cihaz
+                                                        tapılmadı.</span></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+
+    </div>
+    <!-- ./wrapper -->
+
+
+    <!-- Toast element -->
+    <div id="wa-toast" class="d-none">
+        <div class="card mb-0 border-0"
+            style="background: var(--surface-2) !important; border-radius: 8px; min-width: 300px;">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="mr-3 d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px; background: var(--accent-soft); border-radius: 8px; color: var(--accent);">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="wa-toast__body font-weight-bold small text-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REQUIRED SCRIPTS -->
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- MetisMenu (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/metismenujs@1.4.0/dist/metismenujs.min.js"></script>
+
+
+    <!-- AdminLTE App -->
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <!-- Custom JS -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="/js/admin-legacy.js" defer></script>
+</body>
+
+</html>
