@@ -7,7 +7,8 @@ services:
     container_name: hubmsg-v2-prod
     restart: unless-stopped
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       NODE_ENV: production
       PORT: "2004"
@@ -15,7 +16,7 @@ services:
       PUBLIC_BASE_URL: ""
       PUPPETEER_SKIP_DOWNLOAD: "true"
       MYSQL_STORAGE: "1"
-      MYSQL_HOST: mysql
+      MYSQL_HOST: hubmsg-v2-prod-mysql
       MYSQL_PORT: "3306"
       MYSQL_DATABASE: hubmsg
       MYSQL_USER: 'hub@dev'
@@ -72,9 +73,10 @@ services:
     container_name: hubmsg-v2-prod-phpmyadmin
     restart: unless-stopped
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: hubmsg-v2-prod-mysql
       PMA_PORT: "3306"
       PMA_USER: 'hub@dev'
       PMA_PASSWORD: ${PMA_PASSWORD:-PORTAINER_SET_PMA_PASSWORD}

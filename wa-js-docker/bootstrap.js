@@ -1,6 +1,22 @@
 const MYSQL_ENABLED = /^(1|true|yes)$/i.test(
   String(process.env.MYSQL_STORAGE || process.env.USE_MYSQL_STORAGE || '')
 );
+const MYSQL_BOOTSTRAP_MAX_ATTEMPTS = Math.max(
+  1,
+  Number(process.env.MYSQL_BOOTSTRAP_MAX_ATTEMPTS || 20)
+);
+const MYSQL_BOOTSTRAP_RETRY_MS = Math.max(
+  250,
+  Number(process.env.MYSQL_BOOTSTRAP_RETRY_MS || 3000)
+);
+
+function isRetryableMysqlError(error) {
+  return Boolean(error && ['ECONNREFUSED', 'ECONNRESET', 'ENOTFOUND', 'EAI_AGAIN'].includes(error.code));
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 async function bootstrap() {
   if (!MYSQL_ENABLED) {
@@ -23,24 +39,39 @@ async function bootstrap() {
     charset: 'utf8mb4'
   });
 
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS app_state (
-      state_key VARCHAR(191) PRIMARY KEY,
-      payload LONGTEXT NOT NULL,
-      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-  `);
+  for (let attempt = 1; attempt <= MYSQL_BOOTSTRAP_MAX_ATTEMPTS; attempt += 1) {
+    try {
+      await pool.query('SELECT 1');
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS app_state (
+          state_key VARCHAR(191) PRIMARY KEY,
+          payload LONGTEXT NOT NULL,
+          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+      `);
 
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS auth_state (
-      session_id VARCHAR(191) NOT NULL,
-      category VARCHAR(128) NOT NULL,
-      item_key VARCHAR(191) NOT NULL,
-      payload LONGTEXT NOT NULL,
-      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      PRIMARY KEY (session_id, category, item_key)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-  `);
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS auth_state (
+          session_id VARCHAR(191) NOT NULL,
+          category VARCHAR(128) NOT NULL,
+          item_key VARCHAR(191) NOT NULL,
+          payload LONGTEXT NOT NULL,
+          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          PRIMARY KEY (session_id, category, item_key)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+      `);
+      break;
+    } catch (error) {
+      if (!isRetryableMysqlError(error) || attempt === MYSQL_BOOTSTRAP_MAX_ATTEMPTS) {
+        throw error;
+      }
+      console.warn(
+        `[bootstrap] MySQL not ready at ${process.env.MYSQL_HOST || 'mysql'}:${process.env.MYSQL_PORT || 3306} ` +
+        `(attempt ${attempt}/${MYSQL_BOOTSTRAP_MAX_ATTEMPTS}): ${error.code}`
+      );
+      await delay(MYSQL_BOOTSTRAP_RETRY_MS);
+    }
+  }
 
   const [stateRows] = await pool.query('SELECT state_key, payload FROM app_state');
   const stateCache = new Map();
