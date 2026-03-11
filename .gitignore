@@ -13,4 +13,6 @@ wa-js/
 wa-js-docker/seed-data/legal_agreements_pdf/*.pdf
 theme/examples/customization-sider/node_modules/
 theme/examples/template-antd/node_modules/
-
+theme/
+.vscode/
+.git/

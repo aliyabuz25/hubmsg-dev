@@ -62,7 +62,6 @@ rmdir /datastore/hubmsg-v2-prod/app/wa-js-docker
 
 ## Build
 Bu stack default olarak image'i repo icinden build eder.
-
 Portainer build context sorunu olursa image'i hostta build et:
 
 ```sh
