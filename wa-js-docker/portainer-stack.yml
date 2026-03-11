@@ -1,0 +1,35 @@
+services:
+  hubmsg-v2-prod:
+    image: hubmsg-v2-prod:latest
+    container_name: hubmsg-v2-prod
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: "2004"
+      TZ: Europe/Istanbul
+      PUBLIC_BASE_URL: ""
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+    volumes:
+      - /datastore/hubmsg-v2-prod/datalar:/app/datalar
+      - /datastore/hubmsg-v2-prod/tenant_data:/app/tenant_data
+      - /datastore/hubmsg-v2-prod/backups:/app/backups
+      - /datastore/hubmsg-v2-prod/uploads:/app/uploads
+      - /datastore/hubmsg-v2-prod/nginx-logs:/app/nginx-logs
+    networks:
+      - edge
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=edge'
+      - 'traefik.http.routers.hubmsg-v2-prod.rule=Host(`msg.octotech.az`)'
+      - 'traefik.http.routers.hubmsg-v2-prod.entrypoints=web'
+      - 'traefik.http.services.hubmsg-v2-prod.loadbalancer.server.port=2004'
+
+networks:
+  edge:
+    external: true
