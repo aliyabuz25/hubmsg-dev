@@ -1,7 +1,7 @@
 services:
   hubmsg-v2-prod:
     build:
-      context: .
+      context: ./wa-js-docker
       dockerfile: Dockerfile
     image: hubmsg-v2-prod:latest
     container_name: hubmsg-v2-prod

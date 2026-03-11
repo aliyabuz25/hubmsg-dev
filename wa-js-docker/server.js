@@ -73,10 +73,16 @@ const {
   fetchLatestBaileysVersion,
   makeCacheableSignalKeyStore,
   Browsers,
-  S_WHATSAPP_NET
+  S_WHATSAPP_NET,
+  proto,
+  initAuthCreds,
+  BufferJSON
 } = require('@whiskeysockets/baileys');
 const pino = require('pino');
 const { exec } = require('child_process');
+
+const mysqlRuntime = global.__HUBMSG_MYSQL__ || null;
+const isMysqlStorageEnabled = !!(mysqlRuntime && mysqlRuntime.enabled);
 
 console.info(
   `[anti-block] profile active: restBase=${REST_BREAK_BASE_MS}ms jitter=${SEND_JITTER_MIN_MS}-${SEND_JITTER_MAX_MS}ms ` +
@@ -149,39 +155,47 @@ async function runBackup() {
       fs.mkdirSync(backupFolder, { recursive: true });
     }
 
-    // 1. Backup JSON Data Files
-    const filesToBackup = [
-      usersPath, apiKeysPath, queuePath, ticketsPath,
-      sessionsPath, auditPath, loginLogsPath, activityLogPath, recipientRegistryPath
-    ];
-
-    filesToBackup.forEach(file => {
-      if (fs.existsSync(file)) {
-        const dest = path.join(backupFolder, path.basename(file));
-        fs.copyFileSync(file, dest);
-      }
-    });
-
-    // 2. Backup Sessions (Compressed)
-    const sessionsDir = path.join(dataDir, 'sessions');
-    if (fs.existsSync(sessionsDir)) {
-      exec('tar --version', (err) => {
-        if (err) {
-          console.warn('[backup] tar komandası tapılmadı, sessiyaların arxivlənməsi keçildi.');
-          console.log(`[backup] JSON yedəkləmə tamamlandı: ${backupFolder}`);
-          return;
-        }
-        const tarCmd = `tar -czf "${path.join(backupFolder, 'sessions.tar.gz')}" -C "${dataDir}" sessions`;
-        exec(tarCmd, (error, stdout, stderr) => {
-          if (error) {
-            console.error(`[backup] Sessiya yedəkləmə xətası: ${error.message}`);
-          } else {
-            console.log(`[backup] Yedəkləmə uğurla tamamlandı: ${backupFolder}`);
-          }
-        });
+    if (isMysqlStorageEnabled) {
+      writeJson(path.join(backupFolder, 'metadata.json'), {
+        mode: 'mysql',
+        createdAt: new Date().toISOString(),
+        note: 'Structured data is stored in MySQL; local JSON/session backup skipped.'
       });
     } else {
-      console.log(`[backup] JSON backup completed at ${backupFolder} (no sessions dir)`);
+    // 1. Backup JSON Data Files
+      const filesToBackup = [
+        usersPath, apiKeysPath, queuePath, ticketsPath,
+        sessionsPath, auditPath, loginLogsPath, activityLogPath, recipientRegistryPath
+      ];
+
+      filesToBackup.forEach(file => {
+        if (fs.existsSync(file)) {
+          const dest = path.join(backupFolder, path.basename(file));
+          fs.copyFileSync(file, dest);
+        }
+      });
+
+      // 2. Backup Sessions (Compressed)
+      const sessionsDir = path.join(dataDir, 'sessions');
+      if (fs.existsSync(sessionsDir)) {
+        exec('tar --version', (err) => {
+          if (err) {
+            console.warn('[backup] tar komandası tapılmadı, sessiyaların arxivlənməsi keçildi.');
+            console.log(`[backup] JSON yedəkləmə tamamlandı: ${backupFolder}`);
+            return;
+          }
+          const tarCmd = `tar -czf "${path.join(backupFolder, 'sessions.tar.gz')}" -C "${dataDir}" sessions`;
+          exec(tarCmd, (error, stdout, stderr) => {
+            if (error) {
+              console.error(`[backup] Sessiya yedəkləmə xətası: ${error.message}`);
+            } else {
+              console.log(`[backup] Yedəkləmə uğurla tamamlandı: ${backupFolder}`);
+            }
+          });
+        });
+      } else {
+        console.log(`[backup] JSON backup completed at ${backupFolder} (no sessions dir)`);
+      }
     }
 
     // Hourly Health Report (Only from admin sessions)
@@ -287,6 +301,7 @@ const dispatchLogsPath = path.join(dataDir, 'message_dispatch_logs.json');
 const mobileAnnouncementsPath = path.join(dataDir, 'mobile_announcements.json');
 const passwordChangeRequestsPath = path.join(dataDir, 'password_change_requests.json');
 const recipientRegistryPath = path.join(dataDir, 'recipient_registry.json');
+const mysqlStateNamespace = path.relative(__dirname, dataDir).replace(/\\/g, '/') || 'datalar';
 const MAX_QUEUE_LENGTH = parseInt(process.env.MAX_QUEUE_LENGTH, 10) || 900000;
 const MAX_DISPATCH_LOGS = parseInt(process.env.MAX_DISPATCH_LOGS, 10) || 200000;
 const MAX_MOBILE_ANNOUNCEMENTS = parseInt(process.env.MAX_MOBILE_ANNOUNCEMENTS, 10) || 5000;
@@ -328,13 +343,154 @@ Kullanıcı, bu metni okuyup anladığını; aşağıdaki imzanın kendisine ait
 Bu metin elektronik ortamda imzalandığı anda yürürlüğe girer ve kullanıcı hesabı için bağlayıcıdır.`;
 const agreementsPdfDir = path.join(dataDir, 'legal_agreements_pdf');
 
+function getMysqlStateStorageKey(filePath) {
+  const resolvedFilePath = path.resolve(filePath);
+  const resolvedDataDir = path.resolve(dataDir);
+  const relativePath = path.relative(resolvedDataDir, resolvedFilePath).replace(/\\/g, '/');
+  if (!relativePath.startsWith('..') && relativePath !== '') {
+    return `${mysqlStateNamespace}:${relativePath}`;
+  }
+  return `${mysqlStateNamespace}:${path.basename(resolvedFilePath)}`;
+}
+
+function persistMysqlStateValue(filePath, data) {
+  if (!isMysqlStorageEnabled) return;
+  const key = getMysqlStateStorageKey(filePath);
+  mysqlRuntime.stateCache.set(key, data);
+  mysqlRuntime.pool.query(
+    'INSERT INTO app_state (state_key, payload) VALUES (?, ?) ON DUPLICATE KEY UPDATE payload = VALUES(payload), updated_at = CURRENT_TIMESTAMP',
+    [key, JSON.stringify(data)]
+  ).catch((error) => {
+    console.error(`[mysql-storage] Failed to persist ${key}:`, error.message);
+  });
+}
+
+function deleteMysqlStateValue(filePath) {
+  if (!isMysqlStorageEnabled) return;
+  const key = getMysqlStateStorageKey(filePath);
+  mysqlRuntime.stateCache.delete(key);
+  mysqlRuntime.pool.query('DELETE FROM app_state WHERE state_key = ?', [key]).catch((error) => {
+    console.error(`[mysql-storage] Failed to delete ${key}:`, error.message);
+  });
+}
+
+function getMysqlAuthCache(sessionId) {
+  if (!isMysqlStorageEnabled) {
+    return null;
+  }
+  if (!mysqlRuntime.authCache.has(sessionId)) {
+    mysqlRuntime.authCache.set(sessionId, {
+      creds: initAuthCreds(),
+      keys: {}
+    });
+  }
+  return mysqlRuntime.authCache.get(sessionId);
+}
+
+function persistMysqlAuthValue(sessionId, category, itemKey, value) {
+  if (!isMysqlStorageEnabled) return;
+  const cache = getMysqlAuthCache(sessionId);
+  if (category === 'creds') {
+    cache.creds = value;
+  } else {
+    if (!cache.keys[category]) {
+      cache.keys[category] = {};
+    }
+    cache.keys[category][itemKey] = value;
+  }
+  mysqlRuntime.pool.query(
+    'INSERT INTO auth_state (session_id, category, item_key, payload) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE payload = VALUES(payload), updated_at = CURRENT_TIMESTAMP',
+    [sessionId, category, itemKey, JSON.stringify(value, BufferJSON.replacer)]
+  ).catch((error) => {
+    console.error(`[mysql-auth] Failed to persist ${sessionId}/${category}/${itemKey}:`, error.message);
+  });
+}
+
+function deleteMysqlAuthValue(sessionId, category, itemKey) {
+  if (!isMysqlStorageEnabled) return;
+  const cache = getMysqlAuthCache(sessionId);
+  if (category === 'creds') {
+    cache.creds = initAuthCreds();
+  } else if (cache.keys[category]) {
+    delete cache.keys[category][itemKey];
+    if (!Object.keys(cache.keys[category]).length) {
+      delete cache.keys[category];
+    }
+  }
+  mysqlRuntime.pool.query(
+    'DELETE FROM auth_state WHERE session_id = ? AND category = ? AND item_key = ?',
+    [sessionId, category, itemKey]
+  ).catch((error) => {
+    console.error(`[mysql-auth] Failed to delete ${sessionId}/${category}/${itemKey}:`, error.message);
+  });
+}
+
+function deleteMysqlAuthSession(sessionId) {
+  if (!isMysqlStorageEnabled) return;
+  mysqlRuntime.authCache.delete(sessionId);
+  mysqlRuntime.pool.query('DELETE FROM auth_state WHERE session_id = ?', [sessionId]).catch((error) => {
+    console.error(`[mysql-auth] Failed to delete session ${sessionId}:`, error.message);
+  });
+}
+
+function createMysqlAuthState(sessionId) {
+  const cache = getMysqlAuthCache(sessionId);
+  const state = {
+    creds: cache.creds,
+    keys: {
+      get: async (type, ids) => {
+        const data = {};
+        ids.forEach((id) => {
+          let value = cache.keys[type] ? cache.keys[type][id] : undefined;
+          if (value && type === 'app-state-sync-key') {
+            value = proto.Message.AppStateSyncKeyData.fromObject(value);
+          }
+          data[id] = value;
+        });
+        return data;
+      },
+      set: async (data) => {
+        for (const category of Object.keys(data)) {
+          for (const id of Object.keys(data[category])) {
+            const value = data[category][id];
+            if (value) {
+              persistMysqlAuthValue(sessionId, category, id, value);
+            } else {
+              deleteMysqlAuthValue(sessionId, category, id);
+            }
+          }
+        }
+      }
+    }
+  };
+
+  return {
+    state,
+    saveCreds: async () => {
+      persistMysqlAuthValue(sessionId, 'creds', 'creds', state.creds);
+    }
+  };
+}
+
 function ensureJson(filePath, fallback) {
+  if (isMysqlStorageEnabled) {
+    const key = getMysqlStateStorageKey(filePath);
+    if (!mysqlRuntime.stateCache.has(key)) {
+      persistMysqlStateValue(filePath, fallback);
+    }
+    return;
+  }
   if (!fs.existsSync(filePath)) {
     fs.writeFileSync(filePath, JSON.stringify(fallback, null, 2));
   }
 }
 
 function readJson(filePath, fallback) {
+  if (isMysqlStorageEnabled) {
+    ensureJson(filePath, fallback);
+    const key = getMysqlStateStorageKey(filePath);
+    return mysqlRuntime.stateCache.get(key);
+  }
   ensureJson(filePath, fallback);
   try {
     return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
@@ -357,6 +513,10 @@ function readJson(filePath, fallback) {
 }
 
 function writeJson(filePath, data) {
+  if (isMysqlStorageEnabled) {
+    persistMysqlStateValue(filePath, data);
+    return;
+  }
   const payload = JSON.stringify(data, null, 2);
   const tmpPath = `${filePath}.tmp`;
   let fd;
@@ -2175,12 +2335,10 @@ async function attachClientToSession(meta) {
   const logger = pino({ level: 'silent' });
   const sessionDir = path.join(dataDir, 'sessions', meta.id);
 
-  if (!fs.existsSync(sessionDir)) {
-    fs.mkdirSync(sessionDir, { recursive: true });
-  }
-
   try {
-    const { state, saveCreds } = await useMultiFileAuthState(sessionDir);
+    const { state, saveCreds } = isMysqlStorageEnabled
+      ? createMysqlAuthState(meta.id)
+      : await useMultiFileAuthState(sessionDir);
     let version = global.cachedBaileysVersion || [2, 3000, 1015901307]; // Fallback or global cached version
     // Versiyanı asinxron olaraq arxa planda yeniləyirik (QR koda 5 saniyə gecikmə verməsin deyə)
     fetchLatestBaileysVersion().then(latest => {
@@ -2294,11 +2452,15 @@ async function attachClientToSession(meta) {
           console.log(`[baileys] ${meta.id} oturumu birdəfəlik bağlandı (Səbəb: ${statusCode || 'Naməlum'}).`);
           if (meta.heartbeatInterval) clearInterval(meta.heartbeatInterval);
           removeDevicesForClient(meta.id);
-          try {
-            if (fs.existsSync(sessionDir)) {
-              fs.rmSync(sessionDir, { recursive: true, force: true });
-            }
-          } catch (e) { }
+          if (isMysqlStorageEnabled) {
+            deleteMysqlAuthSession(meta.id);
+          } else {
+            try {
+              if (fs.existsSync(sessionDir)) {
+                fs.rmSync(sessionDir, { recursive: true, force: true });
+              }
+            } catch (e) { }
+          }
           clientSessions.delete(meta.id);
           deviceLocks.delete(meta.id);
         }
@@ -2476,8 +2638,12 @@ function deleteClientSession(sessionId, { removeSessionDir = true } = {}) {
   deviceLocks.delete(sessionId);
 
   if (removeSessionDir) {
-    const sessionDir = path.join(dataDir, 'sessions', sessionId);
-    try { fs.rmSync(sessionDir, { recursive: true, force: true }); } catch (e) { }
+    if (isMysqlStorageEnabled) {
+      deleteMysqlAuthSession(sessionId);
+    } else {
+      const sessionDir = path.join(dataDir, 'sessions', sessionId);
+      try { fs.rmSync(sessionDir, { recursive: true, force: true }); } catch (e) { }
+    }
   }
 
   logActivity({
@@ -7967,6 +8133,9 @@ function getDirSize(dirPath) {
 
 // Routes
 app.get('/admin/backups', ensureAdmin, (req, res) => {
+  if (isMysqlStorageEnabled) {
+    return res.json({ backups: [], mode: 'mysql', message: 'Structured data is stored in MySQL.' });
+  }
   try {
     const backups = [];
     if (fs.existsSync(backupsGlobalDir)) {
@@ -8033,6 +8202,9 @@ app.delete('/admin/backups/:date/:time', ensureAdmin, (req, res) => {
 });
 
 app.get('/admin/backups/:date/:time/file/:filename', ensureAdmin, (req, res) => {
+  if (isMysqlStorageEnabled) {
+    return res.status(501).json({ error: 'MySQL storage mode does not expose JSON backup files.' });
+  }
   const { date, time, filename } = req.params;
 
   // Security: prevent path traversal and restrict to .json files (sessions.tar.gz is too big for this)
@@ -8055,6 +8227,9 @@ app.get('/admin/backups/:date/:time/file/:filename', ensureAdmin, (req, res) => 
 });
 
 app.post('/admin/backups/restore', ensureAdmin, (req, res) => {
+  if (isMysqlStorageEnabled) {
+    return res.status(501).json({ error: 'MySQL storage mode requires database-level backup/restore.' });
+  }
   const { id } = req.body; // format: "YYYY-MM-DD/HH-MM-SS"
   if (!id) return res.status(400).json({ error: 'Yedek ID gerekli' });
 

@@ -35,7 +35,7 @@ function spawnInstance(name, port, isIsolated = false) {
     };
     if (isIsolated) env.ISOLATED_TENANT = name;
 
-    const child = spawn('node', ['server.js'], {
+    const child = spawn('node', ['bootstrap.js'], {
         env,
         stdio: 'inherit'
     });

@@ -16,7 +16,7 @@ RUN apt-get update \
 COPY package.json ./
 RUN npm install --omit=dev --no-package-lock
 
-COPY server.js gateway.js runner.js healthcheck.js ./
+COPY bootstrap.js server.js gateway.js runner.js healthcheck.js ./
 COPY public ./public
 COPY views ./views
 COPY seed-data ./seed-data

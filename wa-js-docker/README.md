@@ -13,6 +13,7 @@ Bu klasor Portainer ve Traefik uzerinden calisacak `hubmsg-v2-prod` deployment p
 - Traefik hedefi: `127.0.0.1:8080`
 - Docker network: `edge`
 - Domain: `msg.octotech.az`
+- phpMyAdmin yolu: `msg.octotech.az/pma`
 - Host port acma: yok
 
 ## Dizin Yapisi
@@ -33,6 +34,8 @@ Not:
 - Bu uygulama tek servisli Node runtime'dir; frontend/backend ayrik degil.
 - Mobil template bilincli olarak eklenmedi.
 - Admin panel `public/admin.html` fallback'i ile calisir.
+- Yapisal veri JSON dosyalar yerine MySQL `app_state` ve `auth_state` tablolarinda tutulur.
+- Baileys auth/session datasi da MySQL'e yazilir.
 
 ## ZIP Paketleme
 `wa-js-docker` klasorunu zipleyip su hedefe koy:
@@ -58,6 +61,8 @@ rmdir /datastore/hubmsg-v2-prod/app/wa-js-docker
 ```
 
 ## Build
+Bu stack default olarak image'i repo icinden build eder.
+
 Portainer build context sorunu olursa image'i hostta build et:
 
 ```sh
@@ -72,16 +77,21 @@ Ozellikler:
 - host port yok
 - `edge` external network
 - Traefik label ile `msg.octotech.az`
+- Ayni host altinda `/pma` ile phpMyAdmin
 - service ici port `2004`
+- MySQL user: `hub@dev`
+- MySQL parola: `hub@@2026!msg**`
+- Uygulama servisi `Dockerfile` uzerinden otomatik build edilir
 
 Deploy:
 
 ```sh
 mkdir -p /datastore/hubmsg-v2-prod/datalar
+mkdir -p /datastore/hubmsg-v2-prod/tenant_data
 mkdir -p /datastore/hubmsg-v2-prod/uploads
 mkdir -p /datastore/hubmsg-v2-prod/nginx-logs
-mkdir -p /datastore/hubmsg-v2-prod/tenant_data
 mkdir -p /datastore/hubmsg-v2-prod/backups
+mkdir -p /datastore/hubmsg-v2-prod/mysql
 ```
 
 Portainer Stack icerigi icin `portainer-stack.yml` kullan.
@@ -98,6 +108,7 @@ DNS yoksa `ERR_NAME_NOT_RESOLVED` gorursun.
 ## Test
 ```sh
 curl -H "Host: msg.octotech.az" http://127.0.0.1:8080/
+curl -H "Host: msg.octotech.az" http://127.0.0.1:8080/pma/
 docker ps | grep hubmsg-v2-prod
 docker network ls | grep edge
 ```
@@ -106,3 +117,4 @@ docker network ls | grep edge
 - Uygulama upload URL'lerini aktif olarak uretmiyor; `PUBLIC_BASE_URL` env'i bos birakildi.
 - API ve admin ayni container/service icinden servis edilir.
 - `uploads/` ve `nginx-logs/` dizinleri deployment standardi icin eklendi.
+- `datalar/` klasoru hala PDF benzeri dosya ciktlari icin kullanilir; JSON state burada tutulmaz.
