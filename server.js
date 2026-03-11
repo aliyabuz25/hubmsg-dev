@@ -83,6 +83,11 @@ const { exec } = require('child_process');
 
 const mysqlRuntime = global.__HUBMSG_MYSQL__ || null;
 const isMysqlStorageEnabled = !!(mysqlRuntime && mysqlRuntime.enabled);
+const sessionSecret = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
+
+if (!process.env.SESSION_SECRET) {
+  console.warn('[security] SESSION_SECRET is not set; using an ephemeral secret for this process');
+}
 
 console.info(
   `[anti-block] profile active: restBase=${REST_BREAK_BASE_MS}ms jitter=${SEND_JITTER_MIN_MS}-${SEND_JITTER_MAX_MS}ms ` +
@@ -4928,7 +4933,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.json({ limit: '50mb' }));
 app.use(cookieParser());
 app.use(session({
-  secret: 'smapi-secret-key-change-this',
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
   cookie: { maxAge: 24 * 60 * 60 * 1000 } // 24 hours

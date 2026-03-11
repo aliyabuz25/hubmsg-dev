@@ -72,6 +72,12 @@ docker build -t hubmsg-v2-prod:latest -f /datastore/hubmsg-v2-prod/app/Dockerfil
 Hazir stack dosyasi:
 - `portainer-stack.yml`
 
+Deploy oncesi repo kokunde `.env.example` dosyasini `.env` olarak kopyala ve gercek secret degerlerini gir:
+
+```sh
+cp .env.example .env
+```
+
 Ozellikler:
 - host port yok
 - `edge` external network
@@ -79,7 +85,7 @@ Ozellikler:
 - Ayni host altinda `/pma` ile phpMyAdmin
 - service ici port `2004`
 - MySQL user: `hub@dev`
-- MySQL parola: `hub@@2026!msg**`
+- MySQL parolalari environment variable ile verilir, repoya commit edilmez
 - Uygulama servisi `Dockerfile` uzerinden otomatik build edilir
 
 Deploy:
